@@ -54,7 +54,7 @@ export default function Hero() {
             animate="show"
             className="relative flex justify-center"
           >
-            <h2 className="absolute text-[180px] font-black uppercase tracking-tight text-neutral-200 select-none">
+            <h2 className="absolute text-[180px] font-black font-head uppercase tracking-tight text-neutral-200 select-none">
                 PREP'D
             </h2>
             <ProductDisplay />

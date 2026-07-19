@@ -1,4 +1,4 @@
-import {
+ import {
     Menu,
     ShoppingBag,
     X,
@@ -107,7 +107,7 @@ export default function Navbar() {
             transition={{ duration: 0.25 }}
             className="fixed inset-0 z-40 bg-white/95 backdrop-blur-xl md:hidden"
           >
-            {/* 💡 FIXED: Separated px-6 and pt-32 to provide systematic structural gutters */}
+            {/* FIXED: Separated px-6 and pt-32 to provide systematic structural gutters */}
             <div className="flex h-full flex-col justify-center px-6 sm:px-8 pt-24 max-w-md mx-auto w-full">
               <div className="flex flex-col space-y-2">
                 {links.map((link, index) => (

@@ -2,6 +2,8 @@ import { motion } from "framer-motion";
 
 import box from "@/assets/images/box.png";
 
+
+
 const rotations = {
   "01": -5,
   "02": 4,
@@ -13,6 +15,7 @@ const rotations = {
 
 export default function ProductDisplay({ activeItem }) {
   return (
+    
     <motion.div
       animate={{
         rotate: rotations[activeItem] || 0,
