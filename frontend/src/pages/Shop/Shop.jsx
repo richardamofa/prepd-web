@@ -1,14 +1,16 @@
-import ProductCollection from "@/components/sections/ProductCollection";
-import ShopCTA from "@/components/sections/ShopCTA";
-import ShopHero from "@/components/sections/ShopHero";
-
-import CustomizationBuilder from "@/components/sections/CustomizationBuilder";
+import Footer from "@/components/layout/Footer";
+import Navbar from "@/components/layout/Navbar";
+import CustomizationBuilder from "@/components/sections/shop/CustomizationBuilder";
+import ProductCollection from "@/components/sections/shop/ProductCollection";
+import ShopCTA from "@/components/sections/shop/ShopCTA";
+import ShopHero from "@/components/sections/shop/ShopHero";
 
 import ProductMarquee from "@/components/common/ProductMarquee";
 
 export default function Shop() {
   return (
     <>
+    <Navbar />
       <ShopHero />
 
       <ProductCollection />
@@ -18,6 +20,7 @@ export default function Shop() {
       <CustomizationBuilder />
 
       <ShopCTA />
+    <Footer />
     </>
   );
 }

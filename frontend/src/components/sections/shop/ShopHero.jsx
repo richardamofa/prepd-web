@@ -2,7 +2,7 @@ import { ArrowDown } from "lucide-react";
 
 import Section from "@/components/ui/Section";
 
-import heroImage from "@/assets/images/shop-hero.jpg";
+import heroImage from "@/assets/images/box.png";
 
 export default function ShopHero() {
   return (

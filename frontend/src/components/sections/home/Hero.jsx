@@ -37,12 +37,19 @@ export default function Hero() {
             </p>
 
             <div className="mt-10 flex gap-4">
-              <Button>
+              <Button onClick={() => (window.location.href = '/shop')}>
                 Shop Now
               </Button>
 
-              <Button variant="secondary">
-                Explore Box
+              <Button
+                variant="secondary"
+                onClick={() => {
+                  const el = document.getElementById('contact');
+                  if (el) el.scrollIntoView({ behavior: 'smooth' });
+                  else window.location.hash = '#contact';
+                }}
+              >
+                Contact Us
               </Button>
             </div>
           </motion.div>

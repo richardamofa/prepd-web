@@ -1,12 +1,14 @@
-import Container from "./Container";
-
 export default function Section({
   children,
   className = "",
+  ...props
 }) {
   return (
-    <section className={`py-20 lg:py-28 ${className}`}>
-      <Container>{children}</Container>
+    <section
+      {...props}
+      className={`px-6 py-24 md:px-12 lg:py-32 ${className}`}
+    >
+      {children}
     </section>
   );
 }

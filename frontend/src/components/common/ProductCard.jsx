@@ -36,7 +36,7 @@ export default function ProductCard({ product }) {
           to={`/shop/${product.slug}`}
           className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-neutral-200 transition hover:bg-white"
         >
-          <ArrowRight size={18} />
+          <ArrowRight size={18}  />
         </Link>
       </div>
     </article>

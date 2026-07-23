@@ -1,18 +1,18 @@
-import Footer from "@/components/layout/Footer";
-import Navbar from "@/components/layout/Navbar";
-import React from "react";
-import ReactDOM from "react-dom/client";
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 
 import App from "./App";
-import "./styles/global.css";
+import { CartProvider } from "./context/CartContext";
 
-ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
+import "@/styles/global.css";
+
+createRoot(document.getElementById("root")).render(
+  <StrictMode>
     <BrowserRouter>
-    <Navbar />
-      <App />
-    <Footer />
+      <CartProvider>
+        <App />
+      </CartProvider>
     </BrowserRouter>
-  </React.StrictMode>
+  </StrictMode>,
 );

@@ -3,7 +3,6 @@ import { motion } from "framer-motion";
 import box from "@/assets/images/box.png";
 
 
-
 const rotations = {
   "01": -5,
   "02": 4,
