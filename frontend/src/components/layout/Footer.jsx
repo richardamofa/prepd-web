@@ -1,8 +1,8 @@
 import Logo from "@/components/common/Logo";
 import Section from "@/components/ui/Section";
 import {
-    Mail,
-    Phone
+  Mail,
+  Phone
 } from "lucide-react";
 
 export default function Footer() {
@@ -23,13 +23,17 @@ export default function Footer() {
 
           {/* Navigation */}
           <nav className="flex items-center gap-8 text-sm font-medium">
-            {["Shop", "Customize", "Contact"].map((link) => (
+            {[
+              { label: "Shop", path: "/shop" },
+              { label: "About", path: "/about" },
+              { label: "Contact", path: "/#contact" }
+            ].map((link) => (
               <a
-                key={link}
-                href="#"
+                key={link.label}
+                href={link.path}
                 className="relative transition duration-300 after:absolute after:-bottom-1 after:left-0 after:h-0.5 after:w-0 after:bg-black after:transition-all after:duration-300 hover:after:w-full"
               >
-                {link}
+                {link.label}
               </a>
             ))}
           </nav>

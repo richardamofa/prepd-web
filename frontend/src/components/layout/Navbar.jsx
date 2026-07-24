@@ -1,142 +1,253 @@
 import {
-    Menu,
-    ShoppingBag,
-    X,
+  Menu,
+  ShoppingBag,
+  X,
 } from "lucide-react";
 
-import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import {
+  AnimatePresence,
+  motion,
+} from "framer-motion";
+
+import {
+  useEffect,
+  useState,
+} from "react";
+
+import { useCart } from "@/context/CartContext";
+
+import { Link } from "react-router-dom";
 
 import Logo from "@/components/common/Logo";
 import Container from "@/components/ui/Container";
 
+
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const { cartCount } = useCart();
 
   const links = [
-    { name: "Home", href: "/" },
-    { name: "Shop", href: "/shop" },
-    { name: "About", href: "/about" },
-    { name: "Contact", href: "/#contact" },
+    {
+      name: "Home",
+      href: "/",
+      type: "route"
+    },
+    {
+      name: "Shop",
+      href: "/shop",
+      type: "route"
+    },
+    {
+      name: "About",
+      href: "/about",
+      type: "route"
+    },
+    {
+      name: "Contact",
+      href: "/#contact",
+      type: "route"
+    },
   ];
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 30);
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 30);
+    };
+
+    window.addEventListener(
+      "scroll",
+      handleScroll,
+    );
+
+    return () => {
+      window.removeEventListener(
+        "scroll",
+        handleScroll,
+      );
+    };
   }, []);
 
   useEffect(() => {
-    document.body.style.overflow = isOpen ? "hidden" : "auto";
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+
     return () => {
-      document.body.style.overflow = "auto";
+      document.body.style.overflow = "";
     };
   }, [isOpen]);
 
+  const closeMenu = () => {
+    setIsOpen(false);
+  };
+
   return (
-    <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        scrolled
-          ? "bg-white/85 backdrop-blur-xl shadow-sm"
-          : "bg-transparent"
-      }`}
-    >
-      <Container className="relative z-50 flex h-24 items-center justify-between">
-        <Logo className="h-10" />
+    <>
+      {/* Navbar */}
+      <header
+        className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${
+          scrolled || isOpen
+            ? "bg-white/90 shadow-sm backdrop-blur-xl"
+            : "bg-transparent"
+        }`}
+      >
+        <Container className="flex h-24 items-center justify-between">
+          <Logo className="h-10" />
 
-        <nav className="hidden items-center gap-12 text-xs font-semibold uppercase tracking-[0.25em] md:flex">
-          {links.map((link) => (
-            <a
-              key={link.name}
-              href={link.href}
-              className="relative transition duration-300 after:absolute after:-bottom-1 after:left-0 after:h-0.5 after:w-0 after:bg-black after:transition-all after:duration-300 hover:after:w-full"
+          {/* Desktop Navigation */}
+          <nav className="hidden items-center gap-12 text-xs font-semibold uppercase tracking-[0.25em] md:flex">
+            {links.map((link) => (
+              <a
+                key={link.name}
+                href={link.href}
+                className="relative transition duration-300 after:absolute after:-bottom-1 after:left-0 after:h-0.5 after:w-0 after:bg-black after:transition-all after:duration-300 hover:after:w-full"
+              >
+                {link.name}
+              </a>
+            ))}
+          </nav>
+
+          {/* Actions */}
+          <div className="flex items-center gap-5">
+            <Link
+              to="/cart"
+              className="relative"
             >
-              {link.name}
-            </a>
-          ))}
-        </nav>
+              <ShoppingBag size={22} />
 
-        <div className="flex items-center gap-5">
-          <div className="relative">
-            <ShoppingBag size={22} />
-            <span className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-black text-[10px] font-semibold text-white">
-              0
-            </span>
-          </div>
-
-          <button
-            onClick={() => setIsOpen((prev) => !prev)}
-            className="md:hidden z-50 relative p-2"
-            aria-label="Toggle Menu"
-          >
-            <AnimatePresence mode="wait">
-              {isOpen ? (
-                <motion.div
-                  key="close"
-                  initial={{ rotate: -90, opacity: 0 }}
-                  animate={{ rotate: 0, opacity: 1 }}
-                  exit={{ rotate: 90, opacity: 0 }}
-                  transition={{ duration: 0.25 }}
-                >
-                  <X size={26} className="text-black" />
-                </motion.div>
-              ) : (
-                <motion.div
-                  key="menu"
-                  initial={{ rotate: 90, opacity: 0 }}
-                  animate={{ rotate: 0, opacity: 1 }}
-                  exit={{ rotate: -90, opacity: 0 }}
-                  transition={{ duration: 0.25 }}
-                >
-                  <Menu size={26} className="text-black" />
-                </motion.div>
+              {cartCount > 0 && (
+                <span className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-black text-[10px] font-semibold text-white">
+                  {cartCount}
+                </span>
               )}
-            </AnimatePresence>
-          </button>
-        </div>
-      </Container>
+            </Link>
 
-      {/* Mobile Drawer Slide-in View overlay layout */}
+            {/* Mobile Toggle */}
+            <button
+              type="button"
+              onClick={() =>
+                setIsOpen((previous) => !previous)
+              }
+              className="relative z-[60] p-2 md:hidden"
+              aria-label={
+                isOpen
+                  ? "Close menu"
+                  : "Open menu"
+              }
+              aria-expanded={isOpen}
+            >
+              <AnimatePresence
+                mode="wait"
+                initial={false}
+              >
+                {isOpen ? (
+                  <motion.div
+                    key="close"
+                    initial={{
+                      opacity: 0,
+                      rotate: -90,
+                    }}
+                    animate={{
+                      opacity: 1,
+                      rotate: 0,
+                    }}
+                    exit={{
+                      opacity: 0,
+                      rotate: 90,
+                    }}
+                  >
+                    <X size={26} />
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="menu"
+                    initial={{
+                      opacity: 0,
+                      rotate: 90,
+                    }}
+                    animate={{
+                      opacity: 1,
+                      rotate: 0,
+                    }}
+                    exit={{
+                      opacity: 0,
+                      rotate: -90,
+                    }}
+                  >
+                    <Menu size={26} />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </button>
+          </div>
+        </Container>
+      </header>
+
+      {/* Mobile Menu */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.25 }}
-            className="fixed inset-0 z-40 bg-white/95 backdrop-blur-xl md:hidden"
+            className="fixed inset-0 z-40 bg-white md:hidden"
+            initial={{
+              opacity: 0,
+            }}
+            animate={{
+              opacity: 1,
+            }}
+            exit={{
+              opacity: 0,
+            }}
           >
-            {/* 💡 FIXED: Separated px-6 and pt-32 to provide systematic structural gutters */}
-            <div className="flex h-full flex-col justify-center px-6 sm:px-8 pt-24 max-w-md mx-auto w-full">
-              <div className="flex flex-col space-y-2">
+            <div className="flex min-h-screen flex-col justify-center px-6">
+              <nav className="flex flex-col gap-2">
                 {links.map((link, index) => (
                   <motion.a
                     key={link.name}
                     href={link.href}
-                    onClick={() => setIsOpen(false)}
-                    initial={{ opacity: 0, y: 15 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.06 }}
-                    className="py-3 text-4xl font-black tracking-tight text-black transition-colors hover:text-neutral-600"
+                    onClick={closeMenu}
+                    initial={{
+                      opacity: 0,
+                      x: -20,
+                    }}
+                    animate={{
+                      opacity: 1,
+                      x: 0,
+                    }}
+                    transition={{
+                      delay: index * 0.08,
+                    }}
+                    className="py-3 text-4xl font-black tracking-tight"
                   >
                     {link.name}
                   </motion.a>
                 ))}
-              </div>
+              </nav>
 
-              <motion.button
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
-                className="mt-12 rounded-full bg-black px-8 py-4 text-lg font-semibold text-white w-full transition-transform active:scale-95"
+              {/*<motion.a
+                href="/shop"
+                onClick={closeMenu}
+                initial={{
+                  opacity: 0,
+                  y: 20,
+                }}
+                animate={{
+                  opacity: 1,
+                  y: 0,
+                }}
+                transition={{
+                  delay: 0.35,
+                }}
+                className="mt-12 flex items-center justify-center rounded-full bg-black px-8 py-4 text-lg font-semibold text-white"
               >
                 Shop Now
-              </motion.button>
+              </motion.a>*/}
             </div>
           </motion.div>
         )}
       </AnimatePresence>
-    </header>
+    </>
   );
 }

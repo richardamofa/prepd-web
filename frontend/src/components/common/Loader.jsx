@@ -27,6 +27,7 @@ export default function Loader() {
               delay: index * 0.08,
             }}
             className="inline-block"
+            style={{ fontFamily: 'var(--font-head)' }}
           >
             {letter}
           </motion.span>

@@ -32,14 +32,16 @@ export default function FeaturedProduct() {
               productive, and prepared from the very first day of the semester.
             </p>
 
-            <div className="mt-10 flex gap-4">
-              <Button>
+            <div className="mt-10 flex flex-col gap-4 sm:flex-row">
+              <Button className="w-full sm:w-auto">
                 Shop Now
               </Button>
 
-              <Button variant="secondary">
-                Learn More
-                <ArrowRight className="ml-2" size={18} />
+              <Button variant="secondary" className="w-full sm:w-auto" asChild>
+                <a href="/about" className="inline-flex w-full items-center justify-center">
+                  Learn More
+                  <ArrowRight className="ml-2" size={18} />
+                </a>
               </Button>
             </div>
           </div>
