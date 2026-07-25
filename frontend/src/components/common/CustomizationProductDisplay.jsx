@@ -1,37 +1,38 @@
 import { AnimatePresence, motion } from "framer-motion";
 
 import box from "@/assets/contents/box.png";
+import { customizationItems } from "@/constants/customizationOptions";
 
-import flashcards from "@/assets/contents/flashcards.png";
-import highlighter from "@/assets/contents/highlighter.png";
-import notebook from "@/assets/contents/notebook.png";
-import pens from "@/assets/contents/pens.png";
-import planner from "@/assets/contents/planner.png";
-import stickyNotes from "@/assets/contents/sticky-notes.png";
+const itemLookup = Object.fromEntries(
+  customizationItems.map((item) => [item.id, item.image]),
+);
 
-const itemImages = {
-  notebook,
-  pens,
-  stickyNotes,
-  planner,
-  highlighter,
-  flashcards,
-};
+const fallbackPositions = [
+  "-left-6 top-16 w-40 rotate-[-15deg]",
+  "right-0 top-20 w-36 rotate-[15deg]",
+  "-left-4 bottom-28 w-32 rotate-[-10deg]",
+  "right-0 bottom-24 w-40 rotate-[8deg]",
+  "left-8 bottom-8 w-32 rotate-[-15deg]",
+  "right-8 top-4 w-36 rotate-[8deg]",
+];
 
 const itemPositions = {
-  notebook: "-left-6 top-16 w-40 rotate-[-15deg]",
-  pens: "right-0 top-20 w-36 rotate-[15deg]",
-  stickyNotes: "-left-4 bottom-28 w-32 rotate-[-10deg]",
-  planner: "right-0 bottom-24 w-40 rotate-[8deg]",
-  highlighters: "left-8 bottom-8 w-32 rotate-[-15deg]",
-  flashcards: "right-8 top-4 w-36 rotate-[8deg]",
+  notebook: fallbackPositions[0],
+  "mini-notebook": fallbackPositions[0],
+  pens: fallbackPositions[1],
+  "pen-pouch": fallbackPositions[1],
+  "sticky-notes": fallbackPositions[2],
+  planner: fallbackPositions[3],
+  highlighter: fallbackPositions[4],
+  highlighters: fallbackPositions[4],
+  flashcards: fallbackPositions[5],
 };
 
 export default function CustomizationProductDisplay({
   selectedItems,
 }) {
   return (
-    <div className="relative mx-auto flex min-h-125 w-full max-w-xl items-center justify-center overflow-hidden rounded-[2rem] bg-neutral-100 p-8 md:min-h-[650px] md:rounded-[3rem]">
+    <div className="relative mx-auto flex min-h-125 w-full max-w-xl items-center justify-center overflow-hidden rounded-4xl bg-neutral-100 p-8 md:min-h-162.5 md:rounded-[3rem]">
       {/* Background Details */}
       <div className="absolute left-10 top-10 h-32 w-32 rounded-full bg-white/70 blur-3xl" />
 
@@ -40,8 +41,8 @@ export default function CustomizationProductDisplay({
       {/* Selected Items */}
       <AnimatePresence>
         {selectedItems.map((item, index) => {
-          const image = itemImages[item];
-          const position = itemPositions[item];
+          const image = itemLookup[item];
+          const position = itemPositions[item] ?? fallbackPositions[index % fallbackPositions.length];
 
           if (!image) return null;
 

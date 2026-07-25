@@ -18,6 +18,10 @@ export default function Cart() {
     removeFromCart,
   } = useCart();
 
+  const subtotal = Number(cartTotal.toFixed(2));
+  const estimatedTax = Number((subtotal * 0.075).toFixed(2));
+  const total = Number((subtotal + estimatedTax).toFixed(2));
+
   if (cartItems.length === 0) {
     return (
       <main className="pt-24">
@@ -37,13 +41,13 @@ export default function Cart() {
 
           <Link
             to="/shop"
-            className="mt-10 inline-flex items-center rounded-full bg-black px-7 py-4 font-semibold text-white transition hover:bg-neutral-800"
+            className="mt-10 inline-flex items-center rounded-full bg-black px-7 py-4 font-semibold text-white! transition hover:bg-neutral-800"
           >
             Shop PREP'D
             <ArrowRight size={18} className="ml-2" />
           </Link>
-        <Footer />
         </Section>
+        <Footer />
       </main>
     );
   }
@@ -149,27 +153,44 @@ export default function Cart() {
               Order Summary
             </h2>
 
-            <div className="mt-8 flex justify-between border-b border-neutral-200 pb-5">
-              <span className="text-neutral-600">
-                Subtotal
-              </span>
+            <div className="mt-8 space-y-3 border-b border-neutral-200 pb-5">
+              {cartItems.map((item) => (
+                <div
+                  key={`${item.id}-summary`}
+                  className="flex items-start justify-between gap-3 text-sm"
+                >
+                  <span className="text-neutral-600">
+                    {item.name} × {item.quantity}
+                  </span>
 
-              <span className="font-semibold">
-                GH₵ {cartTotal}
-              </span>
+                  <span className="font-medium text-neutral-900">
+                    GH₵ {(item.price * item.quantity).toFixed(2)}
+                  </span>
+                </div>
+              ))}
+
+              <div className="flex justify-between pt-2 text-sm">
+                <span className="text-neutral-600">Subtotal</span>
+                <span className="font-semibold">GH₵ {subtotal.toFixed(2)}</span>
+              </div>
+
+              <div className="flex justify-between text-sm">
+                <span className="text-neutral-600">Estimated VAT/Tax</span>
+                <span className="font-semibold">GH₵ {estimatedTax.toFixed(2)}</span>
+              </div>
             </div>
 
             <div className="mt-5 flex justify-between text-lg font-bold">
               <span>Total</span>
 
               <span>
-                GH₵ {cartTotal}
+                GH₵ {total.toFixed(2)}
               </span>
             </div>
 
             <Link
               to="/checkout"
-              className="mt-8 flex items-center justify-center rounded-full bg-black px-6 py-4 font-semibold text-white transition hover:bg-neutral-800"
+              className="mt-8 flex items-center justify-center rounded-full bg-black px-6 py-4 font-semibold text-white! transition hover:bg-neutral-800"
             >
               Proceed to Checkout
               <ArrowRight size={18} className="ml-2" />

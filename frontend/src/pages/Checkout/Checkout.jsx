@@ -127,7 +127,7 @@ export default function Checkout() {
 
           <Link
             to="/shop"
-            className="mt-6 inline-block font-semibold underline underline-offset-4"
+            className="mt-6 inline-block font-semibold underline underline-offset-4 text-white!"
           >
             Return to Shop
           </Link>

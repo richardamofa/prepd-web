@@ -226,7 +226,7 @@ export default function Navbar() {
                 ))}
               </nav>
 
-              {/*<motion.a
+              <motion.a
                 href="/shop"
                 onClick={closeMenu}
                 initial={{
@@ -240,10 +240,10 @@ export default function Navbar() {
                 transition={{
                   delay: 0.35,
                 }}
-                className="mt-12 flex items-center justify-center rounded-full bg-black px-8 py-4 text-lg font-semibold text-white"
+                className="mt-12 flex items-center justify-center rounded-full bg-black px-8 py-4 text-lg font-semibold text-white!"
               >
                 Shop Now
-              </motion.a>*/}
+              </motion.a>
             </div>
           </motion.div>
         )}

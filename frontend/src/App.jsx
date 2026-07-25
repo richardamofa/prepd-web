@@ -1,7 +1,7 @@
+import Loader from "@/components/common/Loader";
+import ScrollToHash from "@/components/common/ScrollToHash";
 import { useEffect, useState } from "react";
 import { Route, Routes } from "react-router-dom";
-
-import Loader from "@/components/common/Loader";
 
 import About from "@/pages/About/About";
 import Cart from "@/pages/Cart/Cart";
@@ -34,33 +34,36 @@ export default function App() {
   }
 
   return (
-    <Routes>
-      <Route path="/" element={<Home />} />
+    <>
+      <ScrollToHash />
+      <Routes>
+        <Route path="/" element={<Home />} />
 
-      <Route
-        path="/shop"
-        element={<Shop />}
-      />
+        <Route
+          path="/shop"
+          element={<Shop />}
+        />
 
-      <Route
-        path="/shop/:slug"
-        element={<ProductDetails />}
-      />
+        <Route
+          path="/shop/:slug"
+          element={<ProductDetails />}
+        />
 
-      <Route
-        path="/about"
-        element={<About />}
-      />
+        <Route
+          path="/about"
+          element={<About />}
+        />
 
-      <Route
-        path="/cart"
-        element={<Cart />}
-      />
+        <Route
+          path="/cart"
+          element={<Cart />}
+        />
 
-      <Route
-        path="/checkout"
-        element={<Checkout />}
-      />
-    </Routes>
+        <Route
+          path="/checkout"
+          element={<Checkout />}
+        />
+      </Routes>
+    </>
   );
 }

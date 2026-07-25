@@ -28,7 +28,7 @@ export default function ProductDetails() {
         </h1>
 
         <Link
-          to="/shop"
+          to="/shop#product-collection"
           className="mt-6 inline-block underline"
         >
           Return to Shop
