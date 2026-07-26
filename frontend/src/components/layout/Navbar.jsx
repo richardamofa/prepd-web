@@ -131,7 +131,7 @@ export default function Navbar() {
               onClick={() =>
                 setIsOpen((previous) => !previous)
               }
-              className="relative z-[60] p-2 md:hidden"
+              className="relative z-60 p-2 md:hidden"
               aria-label={
                 isOpen
                   ? "Close menu"
@@ -226,8 +226,9 @@ export default function Navbar() {
                 ))}
               </nav>
 
-              {/*<motion.a
-                href="/shop"
+              <motion.a
+                href="https://www.instagram.com/prepd_26/"
+                target="blank_"
                 onClick={closeMenu}
                 initial={{
                   opacity: 0,
@@ -240,10 +241,10 @@ export default function Navbar() {
                 transition={{
                   delay: 0.35,
                 }}
-                className="mt-12 flex items-center justify-center rounded-full bg-black px-8 py-4 text-lg font-semibold text-white"
+                className="mt-12 flex items-center justify-center rounded-full bg-black px-8 py-4 text-lg font-semibold text-white!"
               >
-                Shop Now
-              </motion.a>*/}
+               VISIT
+              </motion.a>
             </div>
           </motion.div>
         )}

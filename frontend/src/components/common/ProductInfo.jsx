@@ -1,5 +1,6 @@
-import { ShoppingBag } from "lucide-react";
+import { ShoppingBag, ShoppingCart } from "lucide-react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { useCart } from "@/context/CartContext";
 
@@ -8,6 +9,7 @@ import Button from "@/components/ui/Button";
 
 export default function ProductInfo({ product }) {
   const [quantity, setQuantity] = useState(1);
+  const navigate = useNavigate();
 
   const { addToCart } = useCart();
 
@@ -15,6 +17,10 @@ export default function ProductInfo({ product }) {
 
   const handleAddToCart = () => {
     addToCart(product, quantity);
+  };
+
+  const handleViewCart = () => {
+    navigate("/cart");
   };
 
   return (
@@ -53,6 +59,19 @@ export default function ProductInfo({ product }) {
           />
 
           Add to Cart
+        </Button>
+
+        <Button
+          variant="secondary"
+          onClick={handleViewCart}
+          className="mt-3 w-full md:mt-0 md:ml-2 md:w-auto"
+        >
+          <ShoppingCart
+            size={18}
+            className="mr-2"
+          />
+
+          View Your Cart
         </Button>
       </div>
 

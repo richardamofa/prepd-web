@@ -6,7 +6,7 @@ import Section from "@/components/ui/Section";
 export default function AboutCTA() {
   return (
     <Section>
-      <div className="rounded-[2rem] bg-black px-8 py-16 text-center text-white md:px-16 md:py-24">
+      <div className="rounded-4xl bg-black px-8 py-16 text-center text-white md:px-16 md:py-24">
         <p className="text-sm uppercase tracking-[0.3em] text-neutral-400">
           Ready when you are
         </p>

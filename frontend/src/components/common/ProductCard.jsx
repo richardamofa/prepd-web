@@ -34,9 +34,9 @@ export default function ProductCard({ product }) {
 
         <Link
           to={`/shop/${product.slug}`}
-          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-neutral-200 transition hover:bg-white"
+          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-black border border-neutral-200 transition hover:bg-neutral-700!"
         >
-          <ArrowRight size={18}  />
+          <ArrowRight size={18} className="text-white!" />
         </Link>
       </div>
     </article>

@@ -22,12 +22,12 @@ export default function ShopCTA() {
 
         <Link
           to="/#contact"
-          className="mt-8 inline-flex items-center rounded-full bg-white px-7 py-4 font-semibold text-black transition hover:scale-[1.02]"
+          className="mt-8 inline-flex items-center rounded-full bg-black px-7 py-4 font-semibold text-white! transition hover:scale-[1.02]"
         >
           Get in touch
           <ArrowRight
             size={18}
-            className="ml-2 text-black"
+            className="ml-2 text-white!"
           />
         </Link>
       </div>
