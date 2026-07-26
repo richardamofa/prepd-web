@@ -4,6 +4,12 @@ import { Link, useNavigate } from "react-router-dom";
 
 import { useCart } from "@/context/CartContext";
 
+import InstagramCheckoutModal from "@/components/common/InstagramCheckoutModal";
+import { createInstagramOrderMessage } from "@/utils/createInstagramOrderMessage";
+
+import { SOCIAL_LINKS } from "@/constants/socials";
+
+
 import Footer from "@/components/layout/Footer";
 import Navbar from "@/components/layout/Navbar";
 import Section from "@/components/ui/Section";
@@ -111,6 +117,78 @@ export default function Checkout() {
       setLoading(false);
     }
   };
+
+
+  const [instagramModalOpen, setInstagramModalOpen] =
+  useState(false);
+
+const [instagramOrder, setInstagramOrder] =
+  useState(null);
+
+const handleInstagramCheckout = async () => {
+  if (
+    !formData.fullName ||
+    !formData.email ||
+    !formData.phone
+  ) {
+    setError(
+      "Please fill in your name, email, and phone number before continuing.",
+    );
+
+    return;
+  }
+
+  setLoading(true);
+  setError("");
+
+  try {
+    const response = await fetch(
+      `${import.meta.env.VITE_API_URL}/api/orders/instagram`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          customer: formData,
+          items: cartItems,
+          total: cartTotal,
+          checkoutMethod: "instagram",
+        }),
+      },
+    );
+
+    if (!response.ok) {
+      throw new Error("Failed to create order");
+    }
+
+    const data = await response.json();
+
+    const orderMessage = createInstagramOrderMessage({
+      reference: data.order.reference,
+      customer: formData,
+      cartItems,
+      cartTotal,
+    });
+
+    await navigator.clipboard.writeText(orderMessage);
+
+    setInstagramOrder({
+      reference: data.order.reference,
+      message: orderMessage,
+    });
+
+    setInstagramModalOpen(true);
+  } catch (error) {
+    console.error(error);
+
+    setError(
+      "We couldn't prepare your order. Please try again.",
+    );
+  } finally {
+    setLoading(false);
+  }
+};
 
   if (cartItems.length === 0) {
     return (
@@ -345,6 +423,29 @@ export default function Checkout() {
               </label>
             </div>
 
+            <div className="relative flex items-center gap-4 py-2">
+              <div className="h-px flex-1 bg-neutral-200" />
+
+              <span className="text-xs uppercase tracking-widest text-neutral-400">
+                Or
+              </span>
+
+              <div className="h-px flex-1 bg-neutral-200" />
+            </div>
+
+            <button
+              type="button"
+              onClick={handleInstagramCheckout}
+              className="w-full rounded-full border border-black bg-white px-6 py-4 font-semibold text-black transition hover:bg-black hover:text-white"
+            >
+              Checkout via Instagram
+            </button>
+
+            <p className="text-center text-sm text-neutral-500">
+              Have questions or want to customize your order? Chat with us directly on
+              Instagram.
+            </p>
+
             {/* Error */}
 
             {error && (
@@ -422,6 +523,18 @@ export default function Checkout() {
       </Section>
 
       <Footer />
+      <InstagramCheckoutModal
+        isOpen={instagramModalOpen}
+        orderReference={instagramOrder?.reference}
+        orderMessage={instagramOrder?.message}
+        onClose={() => setInstagramModalOpen(false)}
+        onOpenInstagram={() => {
+          window.open(
+            `https://ig.me/m/${SOCIAL_LINKS.instagram}`,
+            "_blank",
+          );
+        }}
+      />
     </main>
   );
 }

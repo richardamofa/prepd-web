@@ -19,8 +19,7 @@ export default function Cart() {
   } = useCart();
 
   const subtotal = Number(cartTotal.toFixed(2));
-  const estimatedTax = Number((subtotal * 0.075).toFixed(2));
-  const total = Number((subtotal + estimatedTax).toFixed(2));
+  const total = subtotal;
 
   if (cartItems.length === 0) {
     return (
@@ -106,7 +105,7 @@ export default function Cart() {
                       onClick={() =>
                         removeFromCart(item.id)
                       }
-                      className="text-neutral-400 transition hover:text-black"
+                      className="text-neutral-400 transition hover:text-[#ff4040]"
                     >
                       <Trash2 size={18} />
                     </button>
@@ -172,11 +171,6 @@ export default function Cart() {
               <div className="flex justify-between pt-2 text-sm">
                 <span className="text-neutral-600">Subtotal</span>
                 <span className="font-semibold">GH₵ {subtotal.toFixed(2)}</span>
-              </div>
-
-              <div className="flex justify-between text-sm">
-                <span className="text-neutral-600">Estimated VAT/Tax</span>
-                <span className="font-semibold">GH₵ {estimatedTax.toFixed(2)}</span>
               </div>
             </div>
 

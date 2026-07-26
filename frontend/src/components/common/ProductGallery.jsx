@@ -9,7 +9,7 @@ export default function ProductGallery({ images }) {
     <div className="space-y-5">
       {/* Main Image */}
 
-      <div className="flex aspect-square items-center justify-center overflow-hidden rounded-[2rem] bg-neutral-100 p-8 md:p-16">
+      <div className="flex aspect-square items-center justify-center overflow-hidden rounded-4xl bg-neutral-100 p-8 md:p-16">
         <img
           src={currentImage.src}
           alt={currentImage.alt}
