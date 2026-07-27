@@ -1,3 +1,4 @@
+import api from "@/services/api";
 import { ArrowRight, LockKeyhole, Mail } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -24,48 +25,37 @@ export default function AdminLogin() {
     }));
   };
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+const handleSubmit = async (event) => {
+  event.preventDefault();
 
-    setLoading(true);
-    setError("");
+  setLoading(true);
+  setError("");
 
-    try {
-      /*
-        Later, this becomes:
+  try {
+    const response = await api.auth.login(formData);
 
-        const response = await fetch(
-          "YOUR_BACKEND_URL/api/auth/login",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(formData),
-          }
-        );
+    localStorage.setItem(
+      "adminToken",
+      response.data.token,
+    );
 
-        const data = await response.json();
+    localStorage.setItem(
+      "admin",
+      JSON.stringify(response.data.admin),
+    );
 
-        localStorage.setItem("adminToken", data.token);
-      */
+    navigate("/admin/dashboard");
+  } catch (error) {
+    console.error(error);
 
-      // Temporary login for UI development
-      await new Promise((resolve) =>
-        setTimeout(resolve, 1000),
-      );
-
-      navigate("/admin/dashboard");
-    } catch (error) {
-      console.error(error);
-
-      setError(
+    setError(
+      error.message ||
         "Unable to sign in. Please check your credentials and try again.",
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
+    );
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <main className="min-h-screen bg-neutral-100">

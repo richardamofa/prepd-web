@@ -1,6 +1,8 @@
+import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import Loader from "@/components/common/Loader";
 import ScrollToHash from "@/components/common/ScrollToHash";
 import AdminLayout from "@/components/layout/AdminLayout";
+
 import { useEffect, useState } from "react";
 import { Route, Routes } from "react-router-dom";
 
@@ -21,7 +23,8 @@ export default function App() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const hasLoadedBefore = sessionStorage.getItem("prepd-loaded");
+    const hasLoadedBefore =
+      sessionStorage.getItem("prepd-loaded");
 
     if (hasLoadedBefore) {
       setLoading(false);
@@ -30,7 +33,11 @@ export default function App() {
 
     const timer = setTimeout(() => {
       setLoading(false);
-      sessionStorage.setItem("prepd-loaded", "true");
+
+      sessionStorage.setItem(
+        "prepd-loaded",
+        "true",
+      );
     }, 2600);
 
     return () => clearTimeout(timer);
@@ -43,22 +50,76 @@ export default function App() {
   return (
     <>
       <ScrollToHash />
+
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/shop" element={<Shop />} />
-        <Route path="/shop/:slug" element={<ProductDetails />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/cart" element={<Cart />} />
-        <Route path="/checkout" element={<Checkout />} />
+        {/* PUBLIC ROUTES */}
 
-        <Route path="/admin" element={<AdminLogin />} />
+        <Route
+          path="/"
+          element={<Home />}
+        />
 
-        <Route element={<AdminLayout />}>
-          <Route path="/admin/login" element={<AdminLogin />} />
-          <Route path="/admin/dashboard" element={<AdminDashboard />} />
-          <Route path="/admin/orders" element={<Orders />} />
-          <Route path="/admin/products" element={<Products/>} />
-          <Route path="/admin/customizations" element={<Customizations/>}/>
+        <Route
+          path="/shop"
+          element={<Shop />}
+        />
+
+        <Route
+          path="/shop/:slug"
+          element={<ProductDetails />}
+        />
+
+        <Route
+          path="/about"
+          element={<About />}
+        />
+
+        <Route
+          path="/cart"
+          element={<Cart />}
+        />
+
+        <Route
+          path="/checkout"
+          element={<Checkout />}
+        />
+
+        {/* ADMIN LOGIN */}
+
+        <Route
+          path="/admin"
+          element={<AdminLogin />}
+        />
+
+        <Route
+          path="/admin/login"
+          element={<AdminLogin />}
+        />
+
+        {/* PROTECTED ADMIN ROUTES */}
+
+        <Route element={<ProtectedRoute />}>
+          <Route element={<AdminLayout />}>
+            <Route
+              path="/admin/dashboard"
+              element={<AdminDashboard />}
+            />
+
+            <Route
+              path="/admin/orders"
+              element={<Orders />}
+            />
+
+            <Route
+              path="/admin/products"
+              element={<Products />}
+            />
+
+            <Route
+              path="/admin/customizations"
+              element={<Customizations />}
+            />
+          </Route>
         </Route>
       </Routes>
     </>
