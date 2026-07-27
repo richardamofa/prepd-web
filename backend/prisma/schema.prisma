@@ -1,0 +1,185 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+enum PaymentMethod {
+  MTN_MOMO
+  PAYSTACK
+  INSTAGRAM
+}
+
+
+model AdminUser {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+
+  name      String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  orders Order[]
+}
+
+
+model Product {
+  id              String   @id @default(cuid())
+
+  slug            String   @unique
+  name            String
+  category        String
+
+  currency        String   @default("GH₵")
+  price           Decimal  @db.Decimal(10, 2)
+
+  image           String?
+  description     String?
+  longDescription String?
+
+  isActive        Boolean  @default(true)
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  images          ProductImage[]
+  items           ProductItem[]
+  orderItems      OrderItem[]
+}
+
+
+model ProductImage {
+  id        String   @id @default(cuid())
+
+  src       String
+  alt       String?
+
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+}
+
+
+model CustomizationItem {
+  id          String   @id @default(cuid())
+
+  slug        String   @unique
+  name        String
+
+  image       String?
+  description String?
+
+  isActive    Boolean  @default(true)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  products ProductItem[]
+}
+
+
+model ProductItem {
+  id String @id @default(cuid())
+
+  quantity Int @default(1)
+
+  productId String
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  customizationItemId String
+  customizationItem CustomizationItem @relation(fields: [customizationItemId], references: [id], onDelete: Cascade)
+
+  @@unique([productId, customizationItemId])
+}
+
+
+model Order {
+  id String @id @default(cuid())
+
+  reference String @unique
+
+  customerName  String
+  customerEmail String
+  customerPhone String
+
+  deliveryRequired Boolean @default(false)
+  deliveryAddress String?
+
+  total Decimal @db.Decimal(10, 2)
+  currency String @default("GH₵")
+
+  paymentMethod PaymentMethod
+  paymentStatus PaymentStatus @default(PENDING)
+
+  orderStatus OrderStatus @default(PENDING)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  items OrderItem[]
+  payments Payment[]
+
+  createdById String?
+  createdBy AdminUser? @relation(fields: [createdById], references: [id])
+}
+
+
+model OrderItem {
+  id String @id @default(cuid())
+
+  productName String
+  productSlug String?
+
+  quantity Int
+
+  unitPrice Decimal @db.Decimal(10, 2)
+  totalPrice Decimal @db.Decimal(10, 2)
+
+  orderId String
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  productId String?
+  product Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+}
+
+
+model Payment {
+  id String @id @default(cuid())
+
+  reference String @unique
+
+  amount Decimal @db.Decimal(10, 2)
+  currency String @default("GH₵")
+
+  method PaymentMethod
+  status PaymentStatus @default(PENDING)
+
+  providerReference String?
+
+  metadata Json?
+
+  orderId String
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
