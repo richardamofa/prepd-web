@@ -1,8 +1,15 @@
+const { Prisma } = require("@prisma/client");
 const prisma = require("../config/prisma");
 
 const orderInclude = {
-  items: true,
+  items: {
+    include: {
+      product: true,
+    },
+  },
+
   payments: true,
+
   createdBy: {
     select: {
       id: true,
@@ -28,22 +35,19 @@ const createOrder = async (data) => {
       id: {
         in: items.map((item) => item.productId),
       },
-
       isActive: true,
     },
   });
 
   if (products.length !== items.length) {
-    throw new Error(
-      "One or more products are unavailable",
-    );
+    throw new Error("One or more products are unavailable");
   }
 
-  let total = 0;
+  let total = new Prisma.Decimal(0);
 
   const orderItems = items.map((item) => {
     const product = products.find(
-      (product) => product.id === item.productId,
+      (p) => p.id === item.productId
     );
 
     const quantity = Number(item.quantity);
@@ -52,10 +56,11 @@ const createOrder = async (data) => {
       throw new Error("Invalid product quantity");
     }
 
-    const unitPrice = Number(product.price);
-    const totalPrice = unitPrice * quantity;
+    const unitPrice = product.price; // Decimal
 
-    total += totalPrice;
+    const totalPrice = unitPrice.mul(quantity);
+
+    total = total.add(totalPrice);
 
     return {
       productId: product.id,
@@ -77,14 +82,12 @@ const createOrder = async (data) => {
       customerEmail,
       customerPhone,
 
-      deliveryRequired:
-        deliveryRequired ?? false,
-
+      deliveryRequired: deliveryRequired ?? false,
       deliveryAddress,
 
-      total,
-
       paymentMethod,
+
+      total,
 
       items: {
         create: orderItems,
@@ -117,7 +120,7 @@ const getOrderById = async (id) => {
 
 const updateOrderStatus = async (
   id,
-  orderStatus,
+  orderStatus
 ) => {
   return await prisma.order.update({
     where: {
@@ -134,7 +137,7 @@ const updateOrderStatus = async (
 
 const updatePaymentStatus = async (
   id,
-  paymentStatus,
+  paymentStatus
 ) => {
   return await prisma.order.update({
     where: {

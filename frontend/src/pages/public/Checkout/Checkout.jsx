@@ -205,7 +205,7 @@ const handleInstagramCheckout = async () => {
 
           <Link
             to="/shop"
-            className="mt-6 inline-block font-semibold underline underline-offset-4 text-white!"
+            className="mt-10 inline-flex items-center rounded-full bg-black px-7 py-4 font-semibold text-white! transition hover:bg-neutral-800"
           >
             Return to Shop
           </Link>

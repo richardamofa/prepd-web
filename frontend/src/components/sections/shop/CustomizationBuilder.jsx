@@ -15,6 +15,7 @@ export default function CustomizationBuilder() {
         eyebrow="Make It Yours"
         title="Build your PREP'D box."
         description="Choose the essentials that fit your needs and tell us how you'd like your box prepared."
+        id= "customization"
       />
 
       <div className="mt-20 grid gap-12 lg:grid-cols-[0.95fr_1.05fr] lg:items-start lg:gap-20">

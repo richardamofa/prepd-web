@@ -1,20 +1,22 @@
 const prisma = require("../config/prisma");
 
+const includeProduct = {
+  images: true,
+
+  items: {
+    include: {
+      customizationItem: true,
+    },
+  },
+};
+
 const getAllProducts = async () => {
-  return await prisma.product.findMany({
+  return prisma.product.findMany({
     where: {
       isActive: true,
     },
 
-    include: {
-      images: true,
-
-      items: {
-        include: {
-          customizationItem: true,
-        },
-      },
-    },
+    include: includeProduct,
 
     orderBy: {
       createdAt: "desc",
@@ -23,20 +25,12 @@ const getAllProducts = async () => {
 };
 
 const getProductBySlug = async (slug) => {
-  return await prisma.product.findUnique({
+  return prisma.product.findUnique({
     where: {
       slug,
     },
 
-    include: {
-      images: true,
-
-      items: {
-        include: {
-          customizationItem: true,
-        },
-      },
-    },
+    include: includeProduct,
   });
 };
 
@@ -47,59 +41,74 @@ const createProduct = async (data) => {
     category,
     currency,
     price,
-    image,
     description,
     longDescription,
-    isActive,
-    customizationItems,
+    isActive = true,
+
+    images = [],
+
+    customizationItems = [],
   } = data;
 
-  return await prisma.product.create({
+  return prisma.product.create({
     data: {
       slug,
       name,
       category,
       currency,
       price,
-      image,
       description,
       longDescription,
       isActive,
 
-      items: customizationItems?.length
-        ? {
-            create: customizationItems.map((item) => ({
-              quantity: item.quantity || 1,
+      images:
+        images.length > 0
+          ? {
+              create: images.map((image) => ({
+                src: image.src,
+                altText: image.altText || null,
+              })),
+            }
+          : undefined,
 
-              customizationItem: {
-                connect: {
-                  id: item.customizationItemId,
+      items:
+        customizationItems.length > 0
+          ? {
+              create: customizationItems.map((item) => ({
+                quantity: item.quantity || 1,
+
+                customizationItem: {
+                  connect: {
+                    id: item.customizationItemId,
+                  },
                 },
-              },
-            })),
-          }
-        : undefined,
+              })),
+            }
+          : undefined,
     },
 
-    include: {
-      images: true,
-
-      items: {
-        include: {
-          customizationItem: true,
-        },
-      },
-    },
+    include: includeProduct,
   });
 };
 
 const updateProduct = async (id, data) => {
   const {
+    images,
+
     customizationItems,
+
     ...productData
   } = data;
 
-  return await prisma.$transaction(async (tx) => {
+  return prisma.$transaction(async (tx) => {
+    if (images) {
+      await tx.productImage.deleteMany({
+        where: {
+          productId: id,
+        },
+      });
+    }
+
     if (customizationItems) {
       await tx.productItem.deleteMany({
         where: {
@@ -108,13 +117,24 @@ const updateProduct = async (id, data) => {
       });
     }
 
-    return await tx.product.update({
+    return tx.product.update({
       where: {
         id,
       },
 
       data: {
         ...productData,
+
+        ...(images
+          ? {
+              images: {
+                create: images.map((image) => ({
+                  src: image.src,
+                  altText: image.altText || null,
+                })),
+              },
+            }
+          : {}),
 
         ...(customizationItems
           ? {
@@ -133,21 +153,13 @@ const updateProduct = async (id, data) => {
           : {}),
       },
 
-      include: {
-        images: true,
-
-        items: {
-          include: {
-            customizationItem: true,
-          },
-        },
-      },
+      include: includeProduct,
     });
   });
 };
 
 const deleteProduct = async (id) => {
-  return await prisma.product.delete({
+  return prisma.product.delete({
     where: {
       id,
     },
@@ -155,7 +167,7 @@ const deleteProduct = async (id) => {
 };
 
 const getCustomizationItems = async () => {
-  return await prisma.customizationItem.findMany({
+  return prisma.customizationItem.findMany({
     where: {
       isActive: true,
     },

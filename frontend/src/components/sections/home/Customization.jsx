@@ -36,7 +36,9 @@ export default function Customization() {
           </div>
 
           <Button className="mt-10">
+            <a href='/shop#customization'>
             Request Customization
+            </a>
           </Button>
         </div>
 

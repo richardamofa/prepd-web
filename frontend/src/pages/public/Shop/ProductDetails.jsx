@@ -1,63 +1,104 @@
-import { ArrowLeft } from "lucide-react";
-import { Link, useParams } from "react-router-dom";
-
 import ProductContents from "@/components/common/ProductContents";
+import ProductDetailsSkeleton from "@/components/common/ProductDetailsSkeleton";
 import ProductGallery from "@/components/common/ProductGallery";
 import ProductInfo from "@/components/common/ProductInfo";
-
-import Section from "@/components/ui/Section";
-
-import { products } from "@/constants/product";
-
-import Navbar from "@/components/layout/Navbar";
+import api from "@/services/api";
+import { ArrowLeft } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
 
 import Footer from "@/components/layout/Footer";
+import Navbar from "@/components/layout/Navbar";
 
 export default function ProductDetails() {
   const { slug } = useParams();
 
-  const product = products.find(
-    (item) => item.slug === slug,
-  );
+  const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  if (!product) {
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const response =
+          await api.products.getBySlug(slug);
+
+        setProduct(response.data);
+      } catch (error) {
+        console.error(
+          "Failed to fetch product:",
+          error,
+        );
+
+        setError("Product not found.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProduct();
+  }, [slug]);
+
+  if (loading) {
     return (
-      <Section className="pt-40 text-center">
-        <h1 className="text-4xl font-black">
-          Product not found.
-        </h1>
+      <>
+        <Navbar />
 
-        <Link
-          to="/shop#product-collection"
-          className="mt-6 inline-block underline"
-        >
-          Return to Shop
-        </Link>
-      </Section>
+        <main className="mx-auto max-w-7xl px-6 py-40">
+          <ProductDetailsSkeleton />
+        </main>
+
+        <Footer />
+      </>
+    );
+  }
+console.log(product);
+console.log(product.images);
+  if (error || !product) {
+    return (
+      <>
+        <Navbar />
+
+        <main className="mx-auto max-w-7xl px-6 py-20">
+          <Link
+            to="/shop"
+            className="inline-flex items-center gap-2 text-sm font-semibold transition hover:underline"
+          >
+            <ArrowLeft size={16} />
+
+            Back to Shop
+          </Link>
+
+          <div className="py-32 text-center">
+            {error || "Product not found"}
+          </div>
+        </main>
+
+        <Footer />
+      </>
     );
   }
 
   return (
-    <main className="pt-24">
-    <Navbar />
-      <Section>
-        {/* Back to Shop */}
+    <>
+      <Navbar />
+
+      <main className="mx-auto max-w-7xl px-6 py-40">
         <Link
           to="/shop"
           className="group mb-10 inline-flex items-center gap-2 text-sm font-semibold text-neutral-600 transition hover:text-black"
         >
-          <ArrowLeft                                                                                                                                                                                                                                                                                                                                                    
-            size={18}                                                                                                   
+          <ArrowLeft
+            size={18}
             className="transition-transform duration-300 group-hover:-translate-x-1"
           />
 
           Back to Shop
         </Link>
 
-        {/* Product Main Section */}
-        <div className="grid gap-16 lg:grid-cols-2 lg:items-start">
+        <div className="grid gap-16 lg:grid-cols-2">
           <ProductGallery
-            images={product.images}
+            images={product.images || []}
           />
 
           <ProductInfo
@@ -66,11 +107,11 @@ export default function ProductDetails() {
         </div>
 
         <ProductContents
-          items={product.items}
+          items={product.items || []}
         />
-      </Section>
+      </main>
 
       <Footer />
-    </main>
+    </>
   );
 }
