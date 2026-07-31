@@ -7,20 +7,19 @@ export default {
 
   theme: {
     extend: {
-      animation: {
-        shimmer: "shimmer 2s linear infinite",
-      },
-
       keyframes: {
         shimmer: {
           "0%": {
-            backgroundPosition: "-1000px 0",
+            backgroundPosition: "-1200px 0",
           },
-
           "100%": {
-            backgroundPosition: "1000px 0",
+            backgroundPosition: "1200px 0",
           },
         },
+      },
+
+      animation: {
+        shimmer: "shimmer 2.8s ease-in-out infinite",
       },
     },
   },

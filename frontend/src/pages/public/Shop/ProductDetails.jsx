@@ -1,5 +1,5 @@
 import ProductContents from "@/components/common/ProductContents";
-import ProductDetailsSkeleton from "@/components/common/ProductDetailsSkeleton";
+import ProductDetailSkeleton from "@/components/common/ProductDetailSkeleton";
 import ProductGallery from "@/components/common/ProductGallery";
 import ProductInfo from "@/components/common/ProductInfo";
 import api from "@/services/api";
@@ -45,7 +45,7 @@ export default function ProductDetails() {
         <Navbar />
 
         <main className="mx-auto max-w-7xl px-6 py-40">
-          <ProductDetailsSkeleton />
+          <ProductDetailSkeleton />
         </main>
 
         <Footer />
