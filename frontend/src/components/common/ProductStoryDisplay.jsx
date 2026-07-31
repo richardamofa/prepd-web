@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 
-import box from "@/assets/contents/box.png";
+import box from "@/assets/contents/box-1.png";
 import flashcards from "@/assets/contents/flashcards.png";
 import highlighter from "@/assets/contents/highlighter.png";
 import notebook from "@/assets/contents/notebook.png";

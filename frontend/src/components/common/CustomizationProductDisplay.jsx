@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 
-import box from "@/assets/contents/box.png";
+import box from "@/assets/contents/customize-box.png";
 import { customizationItems } from "@/constants/customizationOptions";
 
 const itemLookup = Object.fromEntries(

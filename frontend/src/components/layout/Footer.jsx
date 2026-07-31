@@ -41,26 +41,26 @@ export default function Footer() {
           {/* Contact */}
           <div className="space-y-3 text-sm">
             <a
-              href="mailto:hello@prepd.com"
+              href="mailto:prepdco.26@gmail.com"
               className="flex items-center gap-2 text-neutral-600 transition hover:text-black"
             >
               <Mail size={16} />
-              hello@prepd.com
+                prepdco.26@gmail.com
             </a>
 
             <a
-              href="tel:+233000000000"
+              href="tel:+233 20 739 2389"
               className="flex items-center gap-2 text-neutral-600 transition hover:text-black"
             >
               <Phone size={16} />
-              +233 XX XXX XXXX
+              +233 20 739 2389
             </a>
           </div>
 
             {/* Socials */}
             <div className="flex items-center gap-5 text-neutral-700">
             <a
-                href="#"
+                href="https://www.instagram.com/prepd_26/"
                 className="group transition duration-300 hover:-translate-y-1"
             >
                 {/* Instagram SVG */}
@@ -83,7 +83,7 @@ export default function Footer() {
             </a>
 
             <a
-                href="mailto:hello@prepd.com"
+                href="mailto:prepdco.2026@gmail.com"
                 className="group transition duration-300 hover:-translate-y-1"
             >
                 {/* Mail SVG */}
