@@ -9,11 +9,11 @@ export default function ProductCard({ product }) {
         className="block overflow-hidden rounded-4xl bg-neutral-100"
       >
         <div className="flex aspect-square items-center justify-center p-10 transition-transform duration-500 group-hover:scale-[1.03]">
-          <img
-            src={product.image}
-            alt={product.name}
-            className="w-100 max-w-sm object-contain"
-          />
+        <img
+          src={product.images?.[0]?.src}
+          alt={product.name}
+          className="w-full max-w-sm object-contain"
+        />
         </div>
       </Link>
 

@@ -3,8 +3,7 @@ import { Sparkles } from "lucide-react";
 import Button from "@/components/ui/Button";
 import Section from "@/components/ui/Section";
 
-import ProductDisplay from "@/components/common/ProductDisplay";
-
+import ProductCustomizationDisplay from "@/components/common/ProductCustomizationDisplay";
 export default function Customization() {
   return (
     <Section>
@@ -36,13 +35,15 @@ export default function Customization() {
           </div>
 
           <Button className="mt-10">
+            <a href='/shop#customization'>
             Request Customization
+            </a>
           </Button>
         </div>
 
         {/* Product */}
         <div className="flex justify-center">
-          <ProductDisplay />
+          <ProductCustomizationDisplay />
         </div>
       </div>
     </Section>

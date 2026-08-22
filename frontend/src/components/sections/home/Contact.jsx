@@ -29,19 +29,19 @@ export default function Contact() {
 
           <div className="mt-10 space-y-5">
             <a
-              href="mailto:hello@prepd.com"
+              href="mailto:prepdco.26@gmail.com"
               className="flex items-center gap-3 text-neutral-700 hover:text-black"
             >
               <Mail size={20} />
-              hello@prepd.com
+              prepdco.26@gmail.com
             </a>
 
             <a
-              href="tel:+233000000000"
+              href="tel:+233 20 739 2389"
               className="flex items-center gap-3 text-neutral-700 hover:text-black"
             >
               <Phone size={20} />
-              +233 XX XXX XXXX
+              +233 20 739 2389
             </a>
           </div>
         </div>

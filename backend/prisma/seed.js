@@ -25,105 +25,179 @@ async function main() {
   |--------------------------------------------------------------------------
   */
 
-  const customizationItems = [
-    {
-      slug: "mini-notebook",
-      name: "Mini Notebook",
+const customizationItems = [
+  [
+    "mini-notebook",
+    "Mini Notebook",
+    "A compact notebook for quick notes, ideas, and everyday planning.",
+  ],
+
+  [
+    "notebook",
+    "Notebook",
+    "A reliable notebook for lectures, study sessions, planning, and everyday writing.",
+  ],
+
+  [
+    "pens",
+    "Pens",
+    "Smooth-writing pens for taking notes, making plans, and getting things done.",
+  ],
+
+  [
+    "sticky-notes",
+    "Sticky Notes",
+    "Perfect for reminders, quick notes, and keeping important ideas visible.",
+  ],
+
+  [
+    "highlighters",
+    "Highlighters",
+    "Make important information stand out while studying or organizing your notes.",
+  ],
+
+  [
+    "hand-cream",
+    "Hand Cream",
+    "An everyday essential to help keep your hands moisturized and comfortable.",
+  ],
+
+  [
+    "lip-balm",
+    "Lip Balm",
+    "An everyday essential for keeping your lips feeling comfortable and moisturized.",
+  ],
+
+  [
+    "notebook-stickers",
+    "Notebook Stickers",
+    "Add personality and organization to your notebooks, planners, and study materials.",
+  ],
+
+  [
+    "laptop-stickers",
+    "Laptop Stickers",
+    "A fun way to personalize your laptop and make it feel more like yours.",
+  ],
+
+  [
+    "mini-splash",
+    "Mini Splash",
+    "A convenient everyday refreshment to keep close during busy days.",
+  ],
+
+  [
+    "pen-pouch",
+    "Pen Pouch",
+    "Keep your pens and other small essentials organized and easy to carry.",
+  ],
+
+  [
+    "premium-pen-pouch",
+    "Premium Pen Pouch",
+    "A premium storage option for keeping your writing essentials organized and protected.",
+  ],
+
+  [
+    "dental-floss",
+    "Dental Floss",
+    "A convenient personal-care essential for your daily oral-care routine.",
+  ],
+
+  [
+    "pocket-tissue",
+    "Pocket Tissue",
+    "A compact everyday essential that is easy to carry wherever you go.",
+  ],
+
+  [
+    "stanley-cup",
+    "Stanley Cup",
+    "A reusable cup designed to help you keep your drink close throughout the day.",
+  ],
+
+  [
+    "keychain",
+    "Keychain",
+    "A small everyday accessory for keeping your keys together and easy to find.",
+  ],
+].map(([slug, name, description]) => ({
+  slug,
+  name,
+  description,
+  image: `/images/customizations/${slug}.png`,
+}));
+
+for (const item of customizationItems) {
+  await prisma.customizationItem.upsert({
+    where: {
+      slug: item.slug,
     },
 
-    {
-      slug: "notebook",
-      name: "Notebook",
+    update: {
+      name: item.name,
+      description: item.description,
+      image: item.image,
     },
 
-    {
-      slug: "pens",
-      name: "Pens",
-    },
-
-    {
-      slug: "sticky-notes",
-      name: "Sticky Notes",
-    },
-
-    {
-      slug: "highlighters",
-      name: "Highlighters",
-    },
-
-    {
-      slug: "hand-cream",
-      name: "Hand Cream",
-    },
-
-    {
-      slug: "lip-balm",
-      name: "Lip Balm",
-    },
-
-    {
-      slug: "notebook-stickers",
-      name: "Notebook Stickers",
-    },
-
-    {
-      slug: "laptop-stickers",
-      name: "Laptop Stickers",
-    },
-
-    {
-      slug: "mini-splash",
-      name: "Mini Splash",
-    },
-
-    {
-      slug: "pen-pouch",
-      name: "Pen Pouch",
-    },
-
-    {
-      slug: "premium-pen-pouch",
-      name: "Premium Pen Pouch",
-    },
-
-    {
-      slug: "dental-floss",
-      name: "Dental Floss",
-    },
-
-    {
-      slug: "pocket-tissue",
-      name: "Pocket Tissue",
-    },
-
-    {
-      slug: "stanley-cup",
-      name: "Stanley Cup",
-    },
-
-    {
-      slug: "keychain",
-      name: "Keychain",
-    },
-  ];
-
-  for (const item of customizationItems) {
-    await prisma.customizationItem.upsert({
-      where: {
-        slug: item.slug,
-      },
-
-      update: {
-        name: item.name,
-      },
-
-      create: item,
-    });
-  }
+    create: item,
+  });
+}
 
   console.log(
     `✅ Seeded ${customizationItems.length} customization items`,
   );
+
+  /*
+  |--------------------------------------------------------------------------
+  | PRODUCT IMAGE HELPERS
+  |--------------------------------------------------------------------------
+  */
+
+  const starterBoxImages = [
+    {
+      src: "/images/products/student-starter-box-1.png",
+      altText: "PREP'D Student Starter Box",
+    },
+    {
+      src: "/images/products/student-starter-box-2.png",
+      altText: "PREP'D Student Starter Box contents",
+    },
+    {
+      src: "/images/products/student-starter-box-3.png",
+      altText: "PREP'D Student Starter Box essentials",
+    },
+  ];
+
+  const levelUpBoxImages = [
+    {
+      src: "/images/products/level-up-box-1.png",
+      altText: "PREP'D Level Up Box",
+    },
+    {
+      src: "/images/products/level-up-box-2.png",
+      altText: "PREP'D Level Up Box contents",
+    },
+    {
+      src: "/images/products/level-up-box-3.png",
+      altText: "PREP'D Level Up Box essentials",
+    },
+  ];
+
+  const levelUpPlusBoxImages = [
+    {
+      src: "/images/products/level-up-plus-box-1.png",
+      altText: "PREP'D Level Up+ Box",
+    },
+    {
+      src: "/images/products/level-up-plus-box-2.png",
+      altText: "PREP'D Level Up+ Box contents",
+    },
+    {
+      src: "/images/products/level-up-plus-box-3.png",
+      altText: "PREP'D Level Up+ Box essentials",
+    },
+  ];
 
   /*
   |--------------------------------------------------------------------------
@@ -149,6 +223,81 @@ async function main() {
         "The PREP'D Student Starter Box is a simple collection of everyday essentials designed to help you begin your semester organized, prepared, and ready for whatever comes next.",
 
       isActive: true,
+
+      images: {
+        deleteMany: {},
+
+        create: starterBoxImages,
+      },
+
+      items: {
+        deleteMany: {},
+
+        create: [
+          {
+            quantity: 2,
+            customizationItem: {
+              connect: {
+                slug: "mini-notebook",
+              },
+            },
+          },
+
+          {
+            quantity: 1,
+            customizationItem: {
+              connect: {
+                slug: "pens",
+              },
+            },
+          },
+
+          {
+            quantity: 1,
+            customizationItem: {
+              connect: {
+                slug: "sticky-notes",
+              },
+            },
+          },
+
+          {
+            quantity: 1,
+            customizationItem: {
+              connect: {
+                slug: "hand-cream",
+              },
+            },
+          },
+
+          {
+            quantity: 1,
+            customizationItem: {
+              connect: {
+                slug: "lip-balm",
+              },
+            },
+          },
+
+          {
+            quantity: 1,
+            customizationItem: {
+              connect: {
+                slug: "notebook-stickers",
+              },
+            },
+          },
+
+          {
+            quantity: 1,
+            customizationItem: {
+              connect: {
+                slug: "laptop-stickers",
+              },
+            },
+          },
+        ],
+      },
     },
 
     create: {
@@ -170,11 +319,14 @@ async function main() {
 
       isActive: true,
 
+      images: {
+        create: starterBoxImages,
+      },
+
       items: {
         create: [
           {
             quantity: 2,
-
             customizationItem: {
               connect: {
                 slug: "mini-notebook",
@@ -184,7 +336,6 @@ async function main() {
 
           {
             quantity: 1,
-
             customizationItem: {
               connect: {
                 slug: "pens",
@@ -194,7 +345,6 @@ async function main() {
 
           {
             quantity: 1,
-
             customizationItem: {
               connect: {
                 slug: "sticky-notes",
@@ -204,7 +354,6 @@ async function main() {
 
           {
             quantity: 1,
-
             customizationItem: {
               connect: {
                 slug: "hand-cream",
@@ -214,7 +363,6 @@ async function main() {
 
           {
             quantity: 1,
-
             customizationItem: {
               connect: {
                 slug: "lip-balm",
@@ -224,7 +372,6 @@ async function main() {
 
           {
             quantity: 1,
-
             customizationItem: {
               connect: {
                 slug: "notebook-stickers",
@@ -234,7 +381,6 @@ async function main() {
 
           {
             quantity: 1,
-
             customizationItem: {
               connect: {
                 slug: "laptop-stickers",
@@ -270,6 +416,126 @@ async function main() {
         "The PREP'D Level Up Box brings together practical study essentials and everyday personal items to help you stay organized, prepared, and comfortable throughout the semester.",
 
       isActive: true,
+
+      images: {
+        deleteMany: {},
+
+        create: levelUpBoxImages,
+      },
+
+      items: {
+        deleteMany: {},
+
+        create: [
+          {
+            quantity: 1,
+            customizationItem: {
+              connect: {
+                slug: "pens",
+              },
+            },
+          },
+
+          {
+            quantity: 1,
+            customizationItem: {
+              connect: {
+                slug: "highlighters",
+              },
+            },
+          },
+
+          {
+            quantity: 1,
+            customizationItem: {
+              connect: {
+                slug: "notebook",
+              },
+            },
+          },
+
+          {
+            quantity: 1,
+            customizationItem: {
+              connect: {
+                slug: "mini-notebook",
+              },
+            },
+          },
+
+          {
+            quantity: 1,
+            customizationItem: {
+              connect: {
+                slug: "notebook-stickers",
+              },
+            },
+          },
+
+          {
+            quantity: 1,
+            customizationItem: {
+              connect: {
+                slug: "laptop-stickers",
+              },
+            },
+          },
+
+          {
+            quantity: 1,
+            customizationItem: {
+              connect: {
+                slug: "mini-splash",
+              },
+            },
+          },
+
+          {
+            quantity: 1,
+            customizationItem: {
+              connect: {
+                slug: "pen-pouch",
+              },
+            },
+          },
+
+          {
+            quantity: 1,
+            customizationItem: {
+              connect: {
+                slug: "lip-balm",
+              },
+            },
+          },
+
+          {
+            quantity: 1,
+            customizationItem: {
+              connect: {
+                slug: "hand-cream",
+              },
+            },
+          },
+
+          {
+            quantity: 1,
+            customizationItem: {
+              connect: {
+                slug: "dental-floss",
+              },
+            },
+          },
+
+          {
+            quantity: 1,
+            customizationItem: {
+              connect: {
+                slug: "pocket-tissue",
+              },
+            },
+          },
+        ],
+      },
     },
 
     create: {
@@ -291,11 +557,14 @@ async function main() {
 
       isActive: true,
 
+      images: {
+        create: levelUpBoxImages,
+      },
+
       items: {
         create: [
           {
             quantity: 1,
-
             customizationItem: {
               connect: {
                 slug: "pens",
@@ -305,7 +574,6 @@ async function main() {
 
           {
             quantity: 1,
-
             customizationItem: {
               connect: {
                 slug: "highlighters",
@@ -315,7 +583,6 @@ async function main() {
 
           {
             quantity: 1,
-
             customizationItem: {
               connect: {
                 slug: "notebook",
@@ -325,7 +592,6 @@ async function main() {
 
           {
             quantity: 1,
-
             customizationItem: {
               connect: {
                 slug: "mini-notebook",
@@ -335,7 +601,6 @@ async function main() {
 
           {
             quantity: 1,
-
             customizationItem: {
               connect: {
                 slug: "notebook-stickers",
@@ -345,7 +610,6 @@ async function main() {
 
           {
             quantity: 1,
-
             customizationItem: {
               connect: {
                 slug: "laptop-stickers",
@@ -355,7 +619,6 @@ async function main() {
 
           {
             quantity: 1,
-
             customizationItem: {
               connect: {
                 slug: "mini-splash",
@@ -365,7 +628,6 @@ async function main() {
 
           {
             quantity: 1,
-
             customizationItem: {
               connect: {
                 slug: "pen-pouch",
@@ -375,7 +637,6 @@ async function main() {
 
           {
             quantity: 1,
-
             customizationItem: {
               connect: {
                 slug: "lip-balm",
@@ -385,7 +646,6 @@ async function main() {
 
           {
             quantity: 1,
-
             customizationItem: {
               connect: {
                 slug: "hand-cream",
@@ -395,7 +655,6 @@ async function main() {
 
           {
             quantity: 1,
-
             customizationItem: {
               connect: {
                 slug: "dental-floss",
@@ -405,7 +664,6 @@ async function main() {
 
           {
             quantity: 1,
-
             customizationItem: {
               connect: {
                 slug: "pocket-tissue",
@@ -441,6 +699,144 @@ async function main() {
         "The PREP'D Level Up+ Box includes everything from the Level Up Box, with additional premium essentials designed to make your semester even more convenient, organized, and enjoyable.",
 
       isActive: true,
+
+      images: {
+        deleteMany: {},
+
+        create: levelUpPlusBoxImages,
+      },
+
+      items: {
+        deleteMany: {},
+
+        create: [
+          {
+            quantity: 1,
+            customizationItem: {
+              connect: {
+                slug: "pens",
+              },
+            },
+          },
+
+          {
+            quantity: 1,
+            customizationItem: {
+              connect: {
+                slug: "highlighters",
+              },
+            },
+          },
+
+          {
+            quantity: 1,
+            customizationItem: {
+              connect: {
+                slug: "notebook",
+              },
+            },
+          },
+
+          {
+            quantity: 1,
+            customizationItem: {
+              connect: {
+                slug: "mini-notebook",
+              },
+            },
+          },
+
+          {
+            quantity: 1,
+            customizationItem: {
+              connect: {
+                slug: "notebook-stickers",
+              },
+            },
+          },
+
+          {
+            quantity: 1,
+            customizationItem: {
+              connect: {
+                slug: "laptop-stickers",
+              },
+            },
+          },
+
+          {
+            quantity: 2,
+            customizationItem: {
+              connect: {
+                slug: "mini-splash",
+              },
+            },
+          },
+
+          {
+            quantity: 1,
+            customizationItem: {
+              connect: {
+                slug: "premium-pen-pouch",
+              },
+            },
+          },
+
+          {
+            quantity: 1,
+            customizationItem: {
+              connect: {
+                slug: "lip-balm",
+              },
+            },
+          },
+
+          {
+            quantity: 1,
+            customizationItem: {
+              connect: {
+                slug: "hand-cream",
+              },
+            },
+          },
+
+          {
+            quantity: 1,
+            customizationItem: {
+              connect: {
+                slug: "dental-floss",
+              },
+            },
+          },
+
+          {
+            quantity: 1,
+            customizationItem: {
+              connect: {
+                slug: "pocket-tissue",
+              },
+            },
+          },
+
+          {
+            quantity: 1,
+            customizationItem: {
+              connect: {
+                slug: "stanley-cup",
+              },
+            },
+          },
+
+          {
+            quantity: 2,
+            customizationItem: {
+              connect: {
+                slug: "keychain",
+              },
+            },
+          },
+        ],
+      },
     },
 
     create: {
@@ -462,17 +858,14 @@ async function main() {
 
       isActive: true,
 
+      images: {
+        create: levelUpPlusBoxImages,
+      },
+
       items: {
         create: [
-          /*
-          |------------------------------------------------------------------
-          | Everything from the Level Up Box
-          |------------------------------------------------------------------
-          */
-
           {
             quantity: 1,
-
             customizationItem: {
               connect: {
                 slug: "pens",
@@ -482,7 +875,6 @@ async function main() {
 
           {
             quantity: 1,
-
             customizationItem: {
               connect: {
                 slug: "highlighters",
@@ -492,7 +884,6 @@ async function main() {
 
           {
             quantity: 1,
-
             customizationItem: {
               connect: {
                 slug: "notebook",
@@ -502,7 +893,6 @@ async function main() {
 
           {
             quantity: 1,
-
             customizationItem: {
               connect: {
                 slug: "mini-notebook",
@@ -512,7 +902,6 @@ async function main() {
 
           {
             quantity: 1,
-
             customizationItem: {
               connect: {
                 slug: "notebook-stickers",
@@ -522,7 +911,6 @@ async function main() {
 
           {
             quantity: 1,
-
             customizationItem: {
               connect: {
                 slug: "laptop-stickers",
@@ -532,7 +920,6 @@ async function main() {
 
           {
             quantity: 2,
-
             customizationItem: {
               connect: {
                 slug: "mini-splash",
@@ -542,7 +929,6 @@ async function main() {
 
           {
             quantity: 1,
-
             customizationItem: {
               connect: {
                 slug: "premium-pen-pouch",
@@ -552,7 +938,6 @@ async function main() {
 
           {
             quantity: 1,
-
             customizationItem: {
               connect: {
                 slug: "lip-balm",
@@ -562,7 +947,6 @@ async function main() {
 
           {
             quantity: 1,
-
             customizationItem: {
               connect: {
                 slug: "hand-cream",
@@ -572,7 +956,6 @@ async function main() {
 
           {
             quantity: 1,
-
             customizationItem: {
               connect: {
                 slug: "dental-floss",
@@ -582,7 +965,6 @@ async function main() {
 
           {
             quantity: 1,
-
             customizationItem: {
               connect: {
                 slug: "pocket-tissue",
@@ -590,15 +972,8 @@ async function main() {
             },
           },
 
-          /*
-          |------------------------------------------------------------------
-          | Level Up+ Exclusive Items
-          |------------------------------------------------------------------
-          */
-
           {
             quantity: 1,
-
             customizationItem: {
               connect: {
                 slug: "stanley-cup",
@@ -608,7 +983,6 @@ async function main() {
 
           {
             quantity: 2,
-
             customizationItem: {
               connect: {
                 slug: "keychain",
@@ -622,23 +996,11 @@ async function main() {
 
   /*
   |--------------------------------------------------------------------------
-  | SUMMARY
+  | ADMIN USER
   |--------------------------------------------------------------------------
   */
 
-  console.log("✅ PREP'D database seeded successfully!");
-
-  console.log({
-    products: [
-      starterBox.name,
-      levelUpBox.name,
-      levelUpPlusBox.name,
-    ],
-
-    customizationItems: customizationItems.length,
-  });
-
-    const hashedPassword = await hashPassword(
+  const hashedPassword = await hashPassword(
     "26devPrepdPassword",
   );
 
@@ -659,6 +1021,16 @@ async function main() {
   console.log("✅ Admin user seeded");
 
   console.log("✅ PREP'D database seeded successfully!");
+
+  console.log({
+    products: [
+      starterBox.name,
+      levelUpBox.name,
+      levelUpPlusBox.name,
+    ],
+
+    customizationItems: customizationItems.length,
+  });
 }
 
 main()

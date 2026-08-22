@@ -1,14 +1,20 @@
 const API_URL = "http://localhost:5000/api";
 
-const apiRequest = async (endpoint, options = {}) => {
-  const response = await fetch(`${API_URL}${endpoint}`, {
-    ...options,
+const apiRequest = async (
+  endpoint,
+  options = {},
+) => {
+  const response = await fetch(
+    `${API_URL}${endpoint}`,
+    {
+      ...options,
 
-    headers: {
-      "Content-Type": "application/json",
-      ...options.headers,
+      headers: {
+        "Content-Type": "application/json",
+        ...options.headers,
+      },
     },
-  });
+  );
 
   let data;
 
@@ -41,6 +47,27 @@ const api = {
         headers: {
           Authorization: `Bearer ${token}`,
         },
+      }),
+  },
+
+  products: {
+    getAll: () =>
+      apiRequest("/products"),
+
+    getBySlug: (slug) =>
+      apiRequest(`/products/${slug}`),
+  },
+
+  customizations: {
+    getAll: () =>
+      apiRequest("/customizations"),
+  },
+
+  orders: {
+    create: (orderData) =>
+      apiRequest("/orders", {
+        method: "POST",
+        body: JSON.stringify(orderData),
       }),
   },
 };
