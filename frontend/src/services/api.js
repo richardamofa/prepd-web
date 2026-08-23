@@ -1,5 +1,5 @@
-const API_URL =
-  import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+const configuredUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
+const API_URL = configuredUrl.endsWith("/api") ? configuredUrl : `${configuredUrl}/api`;
 
 const apiRequest = async (
   endpoint,
