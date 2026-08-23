@@ -1,6 +1,6 @@
 import { Mail, Phone } from "lucide-react";
 
-import ContactForm from "@/components/forms/ContactForm";
+import ContactForm from "@/components/forms/contactForm";
 
 import Section from "@/components/ui/Section";
 
