@@ -13,14 +13,11 @@ export default function ProductGallery({
 
   // Debug logs (remove when everything works)
   useEffect(() => {
-    console.log("Gallery images:", images);
+    // console.log("Gallery images:", images);
 
     if (images.length) {
-      console.log("Current image:", images[activeImage]);
-      console.log(
-        "Current src:",
-        images[activeImage]?.src
-      );
+      // console.log("Current image:", images[activeImage]);
+      // console.log("Current src:", images[activeImage]?.src);
     }
   }, [images, activeImage]);
 
@@ -68,10 +65,7 @@ export default function ProductGallery({
           }
           className="h-full w-full object-contain transition-all duration-300"
           onError={(e) => {
-            console.error(
-              "Failed to load:",
-              currentImage.src
-            );
+            // console.error("Failed to load:", currentImage.src);
 
             e.currentTarget.src =
               "/images/placeholders/product-placeholder.png";

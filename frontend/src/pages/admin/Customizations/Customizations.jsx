@@ -10,7 +10,10 @@ import { useMemo, useState } from "react";
 
 import AdminModal from "@/components/admin/AdminModal";
 import Section from "@/components/ui/Section";
-import { customizationItems as initialItems } from "@/constants/customizationOptions";
+import { useToast } from "@/context/ToastContext";
+import { useAdminCustomizationMutations, useAdminCustomizations } from "@/hooks/adminQueries";
+
+const EMPTY_ITEMS = [];
 
 const emptyCustomizationForm = {
   name: "",
@@ -19,7 +22,10 @@ const emptyCustomizationForm = {
 };
 
 export default function Customizations() {
-  const [items, setItems] = useState(initialItems);
+  const { showToast } = useToast();
+  const { data: response, error, isPending, isFetching } = useAdminCustomizations();
+  const { create, update, remove } = useAdminCustomizationMutations();
+  const items = response?.data || EMPTY_ITEMS;
   const [search, setSearch] = useState("");
   const [selectedItem, setSelectedItem] = useState(null);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
@@ -40,9 +46,7 @@ export default function Customizations() {
 
     if (!confirmed) return;
 
-    setItems((currentItems) =>
-      currentItems.filter((item) => item.id !== itemId),
-    );
+    remove.mutate(itemId, { onSuccess: () => showToast("Customization item deleted.", "success"), onError: (deleteError) => showToast(deleteError.message || "Unable to delete item.", "error") });
   };
 
   const openAddItem = () => {
@@ -67,7 +71,7 @@ export default function Customizations() {
     setIsFormOpen(true);
   };
 
-  const handleSaveItem = (event) => {
+  const handleSaveItem = async (event) => {
     event.preventDefault();
 
     const nextItem = {
@@ -76,15 +80,12 @@ export default function Customizations() {
       image: formData.image,
     };
 
-    if (formMode === "edit" && selectedItem) {
-      setItems((currentItems) =>
-        currentItems.map((item) =>
-          item.id === selectedItem.id ? nextItem : item,
-        ),
-      );
-    } else {
-      setItems((currentItems) => [nextItem, ...currentItems]);
-    }
+    try {
+      const payload = { slug: nextItem.id, name: nextItem.name, image: nextItem.image || null };
+      if (formMode === "edit" && selectedItem) await update.mutateAsync({ id: selectedItem.id, data: payload });
+      else await create.mutateAsync(payload);
+      showToast(formMode === "edit" ? "Customization item updated." : "Customization item created.", "success");
+    } catch (saveError) { showToast(saveError.message || "Unable to save item.", "error"); }
 
     setIsFormOpen(false);
     setSelectedItem(null);
@@ -92,7 +93,7 @@ export default function Customizations() {
   };
 
   return (
-    <Section className="pt-32">
+    <Section className="py-8 lg:py-10">
       <div className="mb-10 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
         <div>
           <p className="text-sm uppercase tracking-[0.3em] text-neutral-500">
@@ -133,7 +134,10 @@ export default function Customizations() {
         </div>
       </div>
 
-      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      {error && <div className="mb-8 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">{error.message}</div>}
+      {isFetching && !isPending && <p className="mb-4 text-xs text-neutral-500">Updating customization items...</p>}
+
+      {!isPending && <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {filteredItems.map((item) => (
           <article
             key={item.id}
@@ -181,7 +185,7 @@ export default function Customizations() {
             </div>
           </article>
         ))}
-      </div>
+      </div>}
 
       <AdminModal
         isOpen={isDetailsOpen}

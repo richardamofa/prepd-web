@@ -3,7 +3,9 @@ import { createContext, useContext, useMemo, useState } from "react";
 const CartContext = createContext(null);
 
 export function CartProvider({ children }) {
-  const [cartItems, setCartItems] = useState([]);
+  const [cartItems, setCartItems] = useState(() => {
+    try { return JSON.parse(localStorage.getItem("prepd-cart") || "[]"); } catch { return []; }
+  });
 
   const addToCart = (product, quantity = 1) => {
     setCartItems((currentItems) => {
@@ -29,7 +31,8 @@ export function CartProvider({ children }) {
           name: product.name,
           price: product.price,
           currency: product.currency,
-          image: product.image,
+          image: product.images?.[0]?.src || null,
+          slug: product.slug,
           quantity,
         },
       ];
@@ -57,6 +60,8 @@ export function CartProvider({ children }) {
   const clearCart = () => {
     setCartItems([]);
   };
+
+  useMemo(() => { localStorage.setItem("prepd-cart", JSON.stringify(cartItems)); }, [cartItems]);
 
   const cartCount = cartItems.reduce(
     (total, item) => total + item.quantity,

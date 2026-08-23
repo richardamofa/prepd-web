@@ -1,10 +1,11 @@
 import {
-    Box,
-    ClipboardList,
-    LayoutDashboard,
-    LogOut,
-    ShoppingBag,
-    X
+  Box,
+  ClipboardList,
+  LayoutDashboard,
+  LogOut,
+  Mail,
+  ShoppingBag,
+  X
 } from "lucide-react";
 
 import { NavLink, useNavigate } from "react-router-dom";
@@ -36,15 +37,21 @@ export default function AdminSidebar({
       path: "/admin/customizations",
       icon: Box,
     },
+    {
+      name: "Customization Requests",
+      path: "/admin/customization-requests",
+      icon: ClipboardList,
+    },
+    {
+      name: "Contact Messages",
+      path: "/admin/contact-messages",
+      icon: Mail,
+    },
   ];
 
   const handleLogout = () => {
-    /*
-      Later:
-
-      localStorage.removeItem("adminToken");
-    */
-
+    localStorage.removeItem("adminToken");
+    localStorage.removeItem("admin");
     navigate("/admin");
   };
 

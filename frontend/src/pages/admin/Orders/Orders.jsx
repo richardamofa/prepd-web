@@ -1,19 +1,14 @@
-import {
-    CheckCircle2,
-    Clock3,
-    Eye,
-    Package,
-    Search,
-    Truck,
-    XCircle,
-} from "lucide-react";
+import { Eye, Search } from "lucide-react";
 
 import { useMemo, useState } from "react";
 
 import AdminModal from "@/components/admin/AdminModal";
+import StatusBadge from "@/components/admin/StatusBadge";
 import Section from "@/components/ui/Section";
+import { useToast } from "@/context/ToastContext";
+import { useAdminOrderMutations, useAdminOrders } from "@/hooks/adminQueries";
 
-const mockOrders = [
+/* const mockOrders = [
   {
     id: "ORD-1001",
     customer: {
@@ -82,59 +77,25 @@ const mockOrders = [
     address: "Kumasi, Ghana",
     createdAt: "2026-07-23",
   },
-];
-
-const statusConfig = {
-  pending: {
-    label: "Pending",
-    icon: Clock3,
-    className: "bg-yellow-100 text-yellow-700",
-  },
-
-  paid: {
-    label: "Paid",
-    icon: CheckCircle2,
-    className: "bg-green-100 text-green-700",
-  },
-
-  processing: {
-    label: "Processing",
-    icon: Package,
-    className: "bg-blue-100 text-blue-700",
-  },
-
-  completed: {
-    label: "Completed",
-    icon: Truck,
-    className: "bg-purple-100 text-purple-700",
-  },
-
-  cancelled: {
-    label: "Cancelled",
-    icon: XCircle,
-    className: "bg-red-100 text-red-700",
-  },
-};
-
-function StatusBadge({ status }) {
-  const config = statusConfig[status];
-
-  if (!config) return null;
-
-  const Icon = config.icon;
-
-  return (
-    <span
-      className={`inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-semibold ${config.className}`}
-    >
-      <Icon size={14} />
-      {config.label}
-    </span>
-  );
-}
+]; */
 
 export default function Orders() {
-  const [orders, setOrders] = useState(mockOrders);
+  const { showToast } = useToast();
+  const { data: response, error, isPending, isFetching } = useAdminOrders();
+  const { updateStatus } = useAdminOrderMutations();
+  const orders = (response?.data || []).map((order) => ({
+    ...order,
+    reference: order.reference,
+    customer: { name: order.customerName, email: order.customerEmail, phone: order.customerPhone },
+    items: order.items.map((item) => ({ name: item.productName, quantity: item.quantity, price: Number(item.unitPrice) })),
+    total: Number(order.total),
+    paymentMethod: order.paymentMethod,
+    paymentStatus: order.paymentStatus.toLowerCase(),
+    orderStatus: order.orderStatus.toLowerCase(),
+    delivery: order.deliveryRequired,
+    address: order.deliveryAddress,
+    createdAt: new Date(order.createdAt).toLocaleDateString(),
+  }));
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [selectedOrder, setSelectedOrder] = useState(null);
@@ -142,7 +103,7 @@ export default function Orders() {
   const filteredOrders = useMemo(() => {
     return orders.filter((order) => {
       const matchesSearch =
-        order.id.toLowerCase().includes(search.toLowerCase()) ||
+        order.reference.toLowerCase().includes(search.toLowerCase()) ||
         order.customer.name
           .toLowerCase()
           .includes(search.toLowerCase()) ||
@@ -158,21 +119,17 @@ export default function Orders() {
     });
   }, [orders, search, statusFilter]);
 
-  const updateOrderStatus = (orderId, newStatus) => {
-    setOrders((currentOrders) =>
-      currentOrders.map((order) =>
-        order.id === orderId
-          ? {
-              ...order,
-              orderStatus: newStatus,
-            }
-          : order,
-      ),
-    );
+  const updateOrderStatus = async (orderId, newStatus) => {
+    try {
+      await updateStatus.mutateAsync({ id: orderId, status: newStatus.toUpperCase() });
+      showToast("Order status updated.", "success");
+    } catch (updateError) {
+      showToast(updateError.message || "Unable to update order status.", "error");
+    }
   };
 
   return (
-    <Section className="pt-32">
+    <Section className="py-8 lg:py-10">
       <div className="mb-10">
         <p className="text-sm uppercase tracking-[0.3em] text-neutral-500">
           Admin
@@ -188,6 +145,10 @@ export default function Orders() {
       </div>
 
       {/* Filters */}
+
+      {error && <div className="mb-8 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">{error.message}</div>}
+
+      {isFetching && !isPending && <p className="mb-4 text-xs text-neutral-500">Updating orders...</p>}
 
       <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div className="relative w-full md:max-w-md">
@@ -242,7 +203,7 @@ export default function Orders() {
               {/* Order */}
 
               <div>
-                <p className="font-bold">{order.id}</p>
+                <p className="font-bold">{order.reference}</p>
 
                 <p className="mt-1 text-xs text-neutral-500">
                   {order.createdAt}
@@ -268,11 +229,11 @@ export default function Orders() {
                   {order.paymentMethod}
                 </p>
 
-                <div className="mt-2">
+                {/*<div className="mt-2">
                   <StatusBadge
                     status={order.paymentStatus}
                   />
-                </div>
+                </div>*/}
               </div>
 
               {/* Order Status */}
@@ -345,14 +306,14 @@ export default function Orders() {
       <AdminModal
         isOpen={Boolean(selectedOrder)}
         onClose={() => setSelectedOrder(null)}
-        title={selectedOrder ? `Order ${selectedOrder.id}` : "Order details"}
+        title={selectedOrder ? `Order ${selectedOrder.reference}` : "Order details"}
         description="Detailed order information and fulfilment summary."
         size="xl"
       >
         {selectedOrder && (
           <div className="space-y-6">
             <div className="grid gap-4 md:grid-cols-2">
-              <DetailBlock label="Order reference" value={selectedOrder.id} />
+              <DetailBlock label="Order reference" value={selectedOrder.reference} />
               <DetailBlock label="Customer name" value={selectedOrder.customer.name} />
               <DetailBlock label="Email" value={selectedOrder.customer.email} />
               <DetailBlock label="Phone" value={selectedOrder.customer.phone} />

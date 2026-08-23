@@ -1,6 +1,7 @@
 const ordersService = require(
   "../services/ordersService",
 );
+const AppError = require("../utils/AppError");
 
 const createOrder = async (
   req,
@@ -66,12 +67,21 @@ const getOrder = async (
   }
 };
 
+const getOrderByReference = async (req, res, next) => {
+  try {
+    const order = await ordersService.getOrderByReference(req.params.reference);
+    if (!order) return res.status(404).json({ success: false, message: "Order not found" });
+    res.json({ success: true, data: order });
+  } catch (error) { next(error); }
+};
+
 const updateOrderStatus = async (
   req,
   res,
   next,
 ) => {
   try {
+    if (!["PENDING", "PROCESSING", "COMPLETED", "CANCELLED"].includes(req.body.orderStatus)) throw new AppError("Order status is invalid", 400);
     const order =
       await ordersService.updateOrderStatus(
         req.params.id,
@@ -115,6 +125,7 @@ module.exports = {
   createOrder,
   getOrders,
   getOrder,
+  getOrderByReference,
   updateOrderStatus,
   updatePaymentStatus,
 };

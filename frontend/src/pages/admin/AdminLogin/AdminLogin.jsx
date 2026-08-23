@@ -4,9 +4,11 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import Logo from "@/components/common/Logo";
+import { useToast } from "@/context/ToastContext";
 
 export default function AdminLogin() {
   const navigate = useNavigate();
+  const { showToast } = useToast();
 
   const [formData, setFormData] = useState({
     email: "",
@@ -45,13 +47,15 @@ const handleSubmit = async (event) => {
     );
 
     navigate("/admin/dashboard");
+    showToast("Welcome back. Admin session started.", "success");
   } catch (error) {
-    console.error(error);
+    // console.error(error);
 
     setError(
       error.message ||
         "Unable to sign in. Please check your credentials and try again.",
     );
+    showToast(error.message || "Unable to sign in.", "error");
   } finally {
     setLoading(false);
   }

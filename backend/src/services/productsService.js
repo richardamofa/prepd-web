@@ -1,7 +1,12 @@
 const prisma = require("../config/prisma");
+const AppError = require("../utils/AppError");
 
 const includeProduct = {
-  images: true,
+  images: {
+    orderBy: {
+      sortOrder: "asc",
+    },
+  },
 
   items: {
     include: {
@@ -34,6 +39,21 @@ const getProductBySlug = async (slug) => {
   });
 };
 
+const getProductById = (id) => prisma.product.findUnique({ where: { id }, include: includeProduct });
+const getAllProductsForAdmin = () => prisma.product.findMany({ include: includeProduct, orderBy: { createdAt: "desc" } });
+
+const imageData = (images) => images.map((image, index) => {
+  if (!image || typeof image.src !== "string" || !image.src.trim()) {
+    throw new AppError("Each product image must have a source", 400);
+  }
+
+  return {
+    src: image.src.trim(),
+    altText: typeof image.altText === "string" ? image.altText.trim() || null : null,
+    sortOrder: image.sortOrder ?? index,
+  };
+});
+
 const createProduct = async (data) => {
   const {
     slug,
@@ -44,30 +64,34 @@ const createProduct = async (data) => {
     description,
     longDescription,
     isActive = true,
-
     images = [],
 
     customizationItems = [],
   } = data;
 
+  if (!Array.isArray(images)) {
+    throw new AppError("Images must be an array", 400);
+  }
+
+  const productData = {
+    slug,
+    name,
+    category,
+    currency,
+    price,
+    description,
+    longDescription,
+    isActive,
+  };
+
   return prisma.product.create({
     data: {
-      slug,
-      name,
-      category,
-      currency,
-      price,
-      description,
-      longDescription,
-      isActive,
+      ...productData,
 
       images:
         images.length > 0
           ? {
-              create: images.map((image) => ({
-                src: image.src,
-                altText: image.altText || null,
-              })),
+              create: imageData(images),
             }
           : undefined,
 
@@ -100,7 +124,31 @@ const updateProduct = async (id, data) => {
     ...productData
   } = data;
 
+  if (images !== undefined && !Array.isArray(images)) {
+    throw new AppError("Images must be an array", 400);
+  }
+
   return prisma.$transaction(async (tx) => {
+    const existingProduct = await tx.product.findUnique({
+      where: { id },
+      select: { id: true },
+    });
+
+    if (!existingProduct) {
+      throw new AppError("Product not found", 404);
+    }
+
+    const allowedProductData = {
+      ...(productData.slug !== undefined ? { slug: productData.slug } : {}),
+      ...(productData.name !== undefined ? { name: productData.name } : {}),
+      ...(productData.category !== undefined ? { category: productData.category } : {}),
+      ...(productData.currency !== undefined ? { currency: productData.currency } : {}),
+      ...(productData.price !== undefined ? { price: productData.price } : {}),
+      ...(productData.description !== undefined ? { description: productData.description } : {}),
+      ...(productData.longDescription !== undefined ? { longDescription: productData.longDescription } : {}),
+      ...(productData.isActive !== undefined ? { isActive: productData.isActive } : {}),
+    };
+
     if (images) {
       await tx.productImage.deleteMany({
         where: {
@@ -123,15 +171,12 @@ const updateProduct = async (id, data) => {
       },
 
       data: {
-        ...productData,
+        ...allowedProductData,
 
         ...(images
           ? {
               images: {
-                create: images.map((image) => ({
-                  src: image.src,
-                  altText: image.altText || null,
-                })),
+                create: imageData(images),
               },
             }
           : {}),
@@ -181,6 +226,8 @@ const getCustomizationItems = async () => {
 module.exports = {
   getAllProducts,
   getProductBySlug,
+    getProductById,
+    getAllProductsForAdmin,
   createProduct,
   updateProduct,
   deleteProduct,

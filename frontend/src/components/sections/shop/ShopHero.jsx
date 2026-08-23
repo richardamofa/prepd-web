@@ -2,17 +2,17 @@ import { ArrowDown } from "lucide-react";
 
 import Section from "@/components/ui/Section";
 
-import heroImage from "@/assets/images/hero.jpg";
+import heroImage from "@/assets/images/shop_hero.png";
 
 export default function ShopHero() {
   return (
     <Section className="pt-32 md:pt-36">
-      <div className="relative min-h-162.5 overflow-hidden rounded-4xl md:min-h-180 md:rounded-[3rem]">
+      <div className="relative min-h-142.5 overflow-hidden rounded-4xl md:min-h-180 md:rounded-[3rem]">
         {/* Background Image */}
         <img
           src={heroImage}
           alt="PREP'D student essentials"
-          className="absolute inset-0 h-150 w-200 object-cover"
+          className="absolute inset-0 h-200 w-200 object-cover"
         />
 
         {/* Overlay */}

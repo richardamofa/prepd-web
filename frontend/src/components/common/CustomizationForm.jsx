@@ -2,17 +2,23 @@ import { Check, Loader2, Send } from "lucide-react";
 import { useState } from "react";
 
 import Button from "@/components/ui/Button";
+import { useToast } from "@/context/ToastContext";
+import api from "@/services/api";
 
 import {
-    customizationItems,
-    preparationOptions,
+  customizationItems,
+  preparationOptions,
 } from "@/constants/customizationOptions";
 
 export default function CustomizationForm({
   selectedItems,
   setSelectedItems,
 }) {
+  const { showToast } = useToast();
   const [formData, setFormData] = useState({
+    customerName: "",
+    customerEmail: "",
+    customerPhone: "",
     preparationFor: "",
     programme: "",
     quantity: 1,
@@ -57,31 +63,20 @@ export default function CustomizationForm({
 
     setStatus("loading");
 
-    const customizationRequest = {
-      ...formData,
-      selectedItems,
-    };
-
-    console.log("Customization request:", customizationRequest);
-
     try {
-      /*
-       * Backend-ready:
-       *
-       * await api.post(
-       *   "/customization-requests",
-       *   customizationRequest
-       * );
-       */
-
-      await new Promise((resolve) =>
-        setTimeout(resolve, 1200),
-      );
+      await api.customizationRequests.create({
+        customerName: formData.customerName,
+        customerEmail: formData.customerEmail,
+        customerPhone: formData.customerPhone,
+        request: `${formData.preparationFor}; ${formData.programme}; Quantity: ${formData.quantity}; Items: ${selectedItems.join(", ")}; ${formData.notes}`,
+      });
 
       setStatus("success");
+      showToast("Customization request sent successfully.", "success");
     } catch (error) {
-      console.error(error);
+      // console.error(error);
       setStatus("error");
+      showToast(error.message || "We couldn't send your request.", "error");
     }
   };
 
@@ -90,6 +85,11 @@ export default function CustomizationForm({
       onSubmit={handleSubmit}
       className="space-y-8"
     >
+      <div className="grid gap-4 sm:grid-cols-2">
+        <label className="text-sm font-semibold">Name<input name="customerName" value={formData.customerName} onChange={handleChange} required className="mt-2 w-full rounded-xl border border-neutral-200 px-4 py-3 font-normal outline-none focus:border-black" /></label>
+        <label className="text-sm font-semibold">Email<input name="customerEmail" type="email" value={formData.customerEmail} onChange={handleChange} required className="mt-2 w-full rounded-xl border border-neutral-200 px-4 py-3 font-normal outline-none focus:border-black" /></label>
+        <label className="text-sm font-semibold sm:col-span-2">Phone<input name="customerPhone" type="tel" value={formData.customerPhone} onChange={handleChange} required className="mt-2 w-full rounded-xl border border-neutral-200 px-4 py-3 font-normal outline-none focus:border-black" /></label>
+      </div>
       {/* Preparation For */}
 
       <div>

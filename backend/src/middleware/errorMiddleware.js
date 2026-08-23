@@ -9,6 +9,8 @@ const errorMiddleware = (
   res.status(error.statusCode || 500).json({
     success: false,
 
+    code: error.code || (error.statusCode ? "REQUEST_ERROR" : "INTERNAL_ERROR"),
+
     message:
       error.statusCode
         ? error.message

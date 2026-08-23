@@ -31,6 +31,10 @@ const loginAdmin = async (
     );
   }
 
+  if (!admin.isActive) {
+    throw new AppError("Invalid email or password", 401);
+  }
+
   const passwordIsValid =
     await comparePassword(
       password,
@@ -53,6 +57,7 @@ const loginAdmin = async (
       id: admin.id,
       email: admin.email,
       name: admin.name,
+      role: admin.role,
     },
   };
 };
@@ -69,6 +74,7 @@ const getAdminById = async (
       id: true,
       email: true,
       name: true,
+      role: true,
       createdAt: true,
     },
   });

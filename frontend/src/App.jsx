@@ -9,12 +9,15 @@ import { Route, Routes } from "react-router-dom";
 import About from "@/pages/public/About/About";
 import Cart from "@/pages/public/Cart/Cart";
 import Checkout from "@/pages/public/Checkout/Checkout";
+import OrderConfirmation from "@/pages/public/Checkout/OrderConfirmation";
 import Home from "@/pages/public/Home/Home";
 import ProductDetails from "@/pages/public/Shop/ProductDetails";
 import Shop from "@/pages/public/Shop/Shop";
 
 import AdminDashboard from "@/pages/admin/AdminDashboard/AdminDashboard";
 import AdminLogin from "@/pages/admin/AdminLogin/AdminLogin";
+import ContactMessages from "@/pages/admin/ContactMessages/ContactMessages";
+import CustomizationRequests from "@/pages/admin/CustomizationRequests/CustomizationRequests";
 import Customizations from "@/pages/admin/Customizations/Customizations";
 import Orders from "@/pages/admin/Orders/Orders";
 import Products from "@/pages/admin/Products/Products";
@@ -84,6 +87,11 @@ export default function App() {
           element={<Checkout />}
         />
 
+        <Route
+          path="/checkout/confirmation"
+          element={<OrderConfirmation />}
+        />
+
         {/* ADMIN LOGIN */}
 
         <Route
@@ -119,6 +127,8 @@ export default function App() {
               path="/admin/customizations"
               element={<Customizations />}
             />
+            <Route path="/admin/customization-requests" element={<CustomizationRequests />} />
+            <Route path="/admin/contact-messages" element={<ContactMessages />} />
           </Route>
         </Route>
       </Routes>

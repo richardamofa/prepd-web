@@ -19,6 +19,9 @@ const customizationsRoutes = require(
 const ordersRoutes = require(
   "./src/routes/ordersRoutes",
 );
+const adminRoutes = require("./src/routes/adminRoutes");
+const publicRoutes = require("./src/routes/publicRoutes");
+const paymentsRoutes = require("./src/routes/paymentsroutes");
 
 const app = express();
 
@@ -140,6 +143,10 @@ app.use(
   "/api/orders",
   ordersRoutes,
 );
+
+app.use("/api/admin", adminRoutes);
+app.use("/api", publicRoutes);
+app.use("/api/payments", paymentsRoutes);
 
 app.use(errorMiddleware);
 
