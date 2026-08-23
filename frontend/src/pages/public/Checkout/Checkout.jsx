@@ -5,6 +5,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "@/context/CartContext";
 
 import InstagramCheckoutModal from "@/components/common/InstagramCheckoutModal";
+import { useToast } from "@/context/ToastContext";
+import api from "@/services/api";
 import { createInstagramOrderMessage } from "@/utils/createInstagramOrderMessage";
 
 import { SOCIAL_LINKS } from "@/constants/socials";
@@ -16,10 +18,12 @@ import Section from "@/components/ui/Section";
 
 export default function Checkout() {
   const navigate = useNavigate();
+  const { showToast } = useToast();
 
   const {
     cartItems,
     cartTotal,
+    clearCart,
   } = useCart();
 
   const [formData, setFormData] = useState({
@@ -28,7 +32,7 @@ export default function Checkout() {
     phone: "",
     address: "",
     deliveryRequired: false,
-    paymentMethod: "paystack",
+    paymentMethod: "PAYSTACK",
   });
 
   const [loading, setLoading] = useState(false);
@@ -58,61 +62,31 @@ export default function Checkout() {
     setError("");
 
     try {
-      const orderData = {
-        customer: {
-          fullName: formData.fullName,
-          email: formData.email,
-          phone: formData.phone,
-        },
-
-        delivery: {
-          required: formData.deliveryRequired,
-          address: formData.deliveryRequired
-            ? formData.address
-            : null,
-        },
-
+      const response = await api.orders.create({
+        customer: { fullName: formData.fullName, email: formData.email, phone: formData.phone },
+        delivery: { required: formData.deliveryRequired, address: formData.deliveryRequired ? formData.address : null },
         paymentMethod: formData.paymentMethod,
-
-        items: cartItems,
-
-        total: cartTotal,
-      };
-
-      console.log("Order:", orderData);
-
-      /*
-        Later:
-
-        const response = await fetch(
-          "YOUR_BACKEND_URL/api/orders",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(orderData),
-          }
-        );
-
-        const data = await response.json();
-
-        // Initialize Paystack using the returned reference
-      */
-
-      await new Promise((resolve) =>
-        setTimeout(resolve, 1000),
-      );
-
-      alert("Order ready for payment.");
-
-      navigate("/shop");
+        items: cartItems.map(({ id, quantity }) => ({ productId: id, quantity })),
+      });
+      clearCart();
+      showToast("Order created successfully.", "success");
+      if (formData.paymentMethod === "PAYSTACK") {
+        try {
+          const payment = await api.payments.initializePaystack(response.data.reference, formData.email);
+          window.location.assign(payment.data.authorization_url);
+          return;
+        } catch (paymentError) {
+          setError(paymentError.message || "Payment initialization is unavailable. Your order remains pending.");
+          showToast("Your order is saved, but payment setup is unavailable.", "info");
+        }
+      }
+      navigate(`/checkout/confirmation?reference=${response.data.reference}`);
     } catch (error) {
-      console.error(error);
-
+      // console.error(error);
       setError(
         "Something went wrong while preparing your order. Please try again.",
       );
+      showToast(error.message || "We couldn't prepare your order.", "error");
     } finally {
       setLoading(false);
     }
@@ -142,30 +116,16 @@ const handleInstagramCheckout = async () => {
   setError("");
 
   try {
-    const response = await fetch(
-      `${import.meta.env.VITE_API_URL}/api/orders/instagram`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          customer: formData,
-          items: cartItems,
-          total: cartTotal,
-          checkoutMethod: "instagram",
-        }),
-      },
-    );
-
-    if (!response.ok) {
-      throw new Error("Failed to create order");
-    }
-
-    const data = await response.json();
+    const response = await api.orders.create({
+      customer: formData,
+      delivery: { required: formData.deliveryRequired, address: formData.address || null },
+      paymentMethod: "INSTAGRAM",
+      items: cartItems.map(({ id, quantity }) => ({ productId: id, quantity })),
+    });
+    const data = response.data;
 
     const orderMessage = createInstagramOrderMessage({
-      reference: data.order.reference,
+      reference: data.reference,
       customer: formData,
       cartItems,
       cartTotal,
@@ -174,17 +134,19 @@ const handleInstagramCheckout = async () => {
     await navigator.clipboard.writeText(orderMessage);
 
     setInstagramOrder({
-      reference: data.order.reference,
+      reference: data.reference,
       message: orderMessage,
     });
 
     setInstagramModalOpen(true);
+    clearCart();
+    showToast("Instagram order created. Your order details have been sent.", "success");
   } catch (error) {
-    console.error(error);
-
+    // console.error(error);
     setError(
       "We couldn't prepare your order. Please try again.",
     );
+    showToast(error.message || "We couldn't prepare your Instagram order.", "error");
   } finally {
     setLoading(false);
   }
@@ -399,7 +361,7 @@ const handleInstagramCheckout = async () => {
                 Payment Method
               </label>
 
-              <label className="flex cursor-pointer items-center gap-3 rounded-xl border border-neutral-200 p-4 transition hover:border-black">
+              {/*<label className="flex cursor-pointer items-center gap-3 rounded-xl border border-neutral-200 p-4 transition hover:border-black">
                 <input
                   type="radio"
                   name="paymentMethod"
@@ -420,10 +382,10 @@ const handleInstagramCheckout = async () => {
                     options.
                   </p>
                 </div>
-              </label>
+              </label>*/}
             </div>
 
-            <div className="relative flex items-center gap-4 py-2">
+            {/*<div className="relative flex items-center gap-4 py-2">
               <div className="h-px flex-1 bg-neutral-200" />
 
               <span className="text-xs uppercase tracking-widest text-neutral-400">
@@ -431,7 +393,7 @@ const handleInstagramCheckout = async () => {
               </span>
 
               <div className="h-px flex-1 bg-neutral-200" />
-            </div>
+            </div>*/}
 
             <button
               type="button"
@@ -443,7 +405,7 @@ const handleInstagramCheckout = async () => {
 
             <p className="text-center text-sm text-neutral-500">
               Have questions or want to customize your order? Chat with us directly on
-              Instagram.
+              Instagram @<a href="https://www.instagram.com/prepd_26/" target="_blank" className="text-blue">prepd_26</a>
             </p>
 
             {/* Error */}
@@ -456,7 +418,7 @@ const handleInstagramCheckout = async () => {
 
             {/* Submit */}
 
-            <button
+            {/*<button
               type="submit"
               disabled={loading}
               className="w-full rounded-full bg-black px-6 py-4 font-semibold text-white transition hover:bg-neutral-800 disabled:cursor-not-allowed disabled:opacity-50"
@@ -464,7 +426,7 @@ const handleInstagramCheckout = async () => {
               {loading
                 ? "Preparing Order..."
                 : `Pay GH₵ ${Number(cartTotal).toFixed(2)}`}
-            </button>
+            </button>*/}
           </form>
 
           {/* Order Summary */}

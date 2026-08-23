@@ -1,5 +1,6 @@
 const { Prisma } = require("@prisma/client");
 const prisma = require("../config/prisma");
+const AppError = require("../utils/AppError");
 
 const orderInclude = {
   items: {
@@ -20,15 +21,23 @@ const orderInclude = {
 };
 
 const createOrder = async (data) => {
-  const {
-    customerName,
-    customerEmail,
-    customerPhone,
-    deliveryRequired,
-    deliveryAddress,
-    paymentMethod,
-    items,
-  } = data;
+  const customer = data.customer || data;
+  const delivery = data.delivery || data;
+  const customerName = customer.customerName || customer.fullName;
+  const customerEmail = customer.customerEmail || customer.email;
+  const customerPhone = customer.customerPhone || customer.phone;
+  const deliveryRequired = delivery.deliveryRequired ?? delivery.required ?? false;
+  const deliveryAddress = delivery.deliveryAddress ?? delivery.address;
+  const paymentMethod = String(data.paymentMethod || "").toUpperCase();
+  const items = Array.isArray(data.items) ? data.items : [];
+
+  if (!customerName || !customerEmail || !customerPhone || !items.length) throw new AppError("Customer details and at least one item are required", 400);
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(customerEmail)) throw new AppError("Email is invalid", 400);
+  if (!deliveryRequired && deliveryAddress) throw new AppError("Delivery address is only valid for delivery orders", 400);
+  if (deliveryRequired && (!deliveryAddress || deliveryAddress.length > 500)) throw new AppError("Delivery address is required", 400);
+  if (!["MTN_MOMO", "PAYSTACK", "INSTAGRAM"].includes(paymentMethod)) throw new AppError("Payment method is invalid", 400);
+  const productIds = items.map((item) => item.productId);
+  if (new Set(productIds).size !== productIds.length) throw new AppError("Duplicate products are not allowed", 400);
 
   const products = await prisma.product.findMany({
     where: {
@@ -40,7 +49,7 @@ const createOrder = async (data) => {
   });
 
   if (products.length !== items.length) {
-    throw new Error("One or more products are unavailable");
+    throw new AppError("One or more products are unavailable", 400);
   }
 
   let total = new Prisma.Decimal(0);
@@ -52,8 +61,8 @@ const createOrder = async (data) => {
 
     const quantity = Number(item.quantity);
 
-    if (!quantity || quantity < 1) {
-      throw new Error("Invalid product quantity");
+    if (!Number.isInteger(quantity) || quantity < 1 || quantity > 99) {
+      throw new AppError("Invalid product quantity", 400);
     }
 
     const unitPrice = product.price; // Decimal
@@ -72,9 +81,9 @@ const createOrder = async (data) => {
     };
   });
 
-  const reference = `PREPD-${Date.now()}`;
+  const reference = `PREPD-${new Date().getFullYear()}-${Date.now()}-${Math.floor(Math.random() * 90 + 10)}`;
 
-  return await prisma.order.create({
+  return prisma.$transaction(async (tx) => tx.order.create({
     data: {
       reference,
 
@@ -92,11 +101,23 @@ const createOrder = async (data) => {
       items: {
         create: orderItems,
       },
+
+      payments: {
+        create: {
+          reference: `PAY-${reference}`,
+          amount: total,
+          currency: "GH₵",
+          method: paymentMethod,
+          metadata: paymentMethod === "INSTAGRAM" ? { flow: "manual-social-checkout" } : undefined,
+        },
+      },
     },
 
     include: orderInclude,
-  });
+  }));
 };
+
+const getOrderByReference = (reference) => prisma.order.findUnique({ where: { reference }, include: orderInclude });
 
 const getAllOrders = async () => {
   return await prisma.order.findMany({
@@ -122,7 +143,10 @@ const updateOrderStatus = async (
   id,
   orderStatus
 ) => {
-  return await prisma.order.update({
+  const order = await prisma.order.findUnique({ where: { id }, select: { id: true } });
+  if (!order) throw new AppError("Order not found", 404);
+
+  return prisma.order.update({
     where: {
       id,
     },
@@ -139,16 +163,13 @@ const updatePaymentStatus = async (
   id,
   paymentStatus
 ) => {
-  return await prisma.order.update({
-    where: {
-      id,
-    },
+  if (!["PENDING", "PAID", "FAILED", "REFUNDED"].includes(paymentStatus)) throw new AppError("Payment status is invalid", 400);
+  const order = await prisma.order.findUnique({ where: { id }, select: { id: true } });
+  if (!order) throw new AppError("Order not found", 404);
 
-    data: {
-      paymentStatus,
-    },
-
-    include: orderInclude,
+  return prisma.$transaction(async (tx) => {
+    await tx.payment.updateMany({ where: { orderId: id }, data: { status: paymentStatus } });
+    return tx.order.update({ where: { id }, data: { paymentStatus }, include: orderInclude });
   });
 };
 
@@ -156,6 +177,7 @@ module.exports = {
   createOrder,
   getAllOrders,
   getOrderById,
+  getOrderByReference,
   updateOrderStatus,
   updatePaymentStatus,
 };

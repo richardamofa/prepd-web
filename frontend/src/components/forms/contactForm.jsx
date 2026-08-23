@@ -2,15 +2,19 @@ import { ArrowRight, LoaderCircle } from "lucide-react";
 import { useState } from "react";
 
 import Button from "@/components/ui/Button";
+import { useToast } from "@/context/ToastContext";
+import api from "@/services/api";
 
 const initialState = {
-  fullName: "",
+  name: "",
   email: "",
+  phone: "",
   subject: "",
   message: "",
 };
 
 export default function ContactForm() {
+  const { showToast } = useToast();
   const [formData, setFormData] = useState(initialState);
 
   const [status, setStatus] = useState("idle");
@@ -32,21 +36,15 @@ export default function ContactForm() {
     setError("");
 
     try {
-      /**
-       * Backend later
-       *
-       * await api.post("/contact", formData)
-       */
-
-      await new Promise((resolve) =>
-        setTimeout(resolve, 1800)
-      );
+      await api.contact.create(formData);
 
       setStatus("success");
+      showToast("Message sent. We will get back to you soon.", "success");
 
       setFormData(initialState);
-    } catch (err) {
+    } catch (error) {
       setStatus("error");
+      showToast(error.message || "We couldn't send your message.", "error");
       setError(
         "Something went wrong. Please try again."
       );
@@ -64,13 +62,18 @@ export default function ContactForm() {
         </label>
 
         <input
-          name="fullName"
-          value={formData.fullName}
+          name="name"
+          value={formData.name}
           onChange={handleChange}
           placeholder="John Doe"
           className="w-full rounded-xl border border-neutral-200 px-4 py-3 outline-none transition focus:border-black"
           required
         />
+      </div>
+
+      <div>
+        <label className="mb-2 block text-sm font-medium">Phone (optional)</label>
+        <input name="phone" value={formData.phone} onChange={handleChange} placeholder="+233 XX XXX XXXX" className="w-full rounded-xl border border-neutral-200 px-4 py-3 outline-none transition focus:border-black" />
       </div>
 
       <div>

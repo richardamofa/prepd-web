@@ -50,10 +50,12 @@ const protect = async (
           id: true,
           email: true,
           name: true,
+          role: true,
+          isActive: true,
         },
       });
 
-    if (!admin) {
+    if (!admin || !admin.isActive) {
       return res.status(401).json({
         success: false,
         message:
@@ -75,4 +77,10 @@ const protect = async (
 
 module.exports = {
   protect,
+  requireRole: (...roles) => (req, res, next) => {
+    if (!req.admin || !roles.includes(req.admin.role)) {
+      return res.status(403).json({ success: false, message: "Forbidden" });
+    }
+    next();
+  },
 };

@@ -4,9 +4,11 @@ import ProductCard from "@/components/common/ProductCard";
 import ProductCardSkeleton from "@/components/common/ProductCardSkeleton";
 import Section from "@/components/ui/Section";
 
+import { useToast } from "@/context/ToastContext";
 import api from "@/services/api";
 
 export default function ProductCollection() {
+  const { showToast } = useToast();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -22,16 +24,14 @@ export default function ProductCollection() {
 
         setProducts(response.data || []);
       } catch (error) {
-        console.error(
-          "Failed to fetch products:",
-          error
-        );
+        // console.error("Failed to fetch products:", error);
 
         if (!mounted) return;
 
         setError(
           "We couldn't load our products right now. Please try again in a moment."
         );
+        showToast("We couldn't load products right now.", "error");
       } finally {
         if (mounted) {
           setLoading(false);

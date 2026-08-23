@@ -4,6 +4,7 @@ const {
   createOrder,
   getOrders,
   getOrder,
+  getOrderByReference,
   updateOrderStatus,
   updatePaymentStatus,
 } = require("../controllers/ordersController");
@@ -13,6 +14,8 @@ const { protect } = require("../middleware/authMiddleware");
 const router = express.Router();
 
 router.post("/", createOrder);
+
+router.get("/reference/:reference", getOrderByReference);
 
 router.get("/", protect, getOrders);
 

@@ -1,19 +1,19 @@
 import Logo from "@/components/common/Logo";
 import Section from "@/components/ui/Section";
 import {
-  Mail,
-  Phone
+    Mail,
+    Phone
 } from "lucide-react";
 
 export default function Footer() {
   return (
     <footer className="border-t border-neutral-200 bg-white">
       <Section className="py-12">
-        <div className="flex flex-col gap-10 lg:flex-row lg:items-center lg:justify-between">
+        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.2fr_0.8fr_1fr_auto] lg:items-start lg:gap-8">
           {/* Brand */}
           <div>
             <div className="flex items-center gap-2">
-                <Logo className="h-10" />
+              <Logo className="h-10" />
             </div>
 
             <p className="mt-3 text-sm text-neutral-500">
@@ -22,7 +22,7 @@ export default function Footer() {
           </div>
 
           {/* Navigation */}
-          <nav className="flex items-center gap-8 text-sm font-medium">
+          <nav className="flex flex-col items-start gap-3 text-sm font-medium">
             {[
               { label: "Shop", path: "/shop" },
               { label: "About", path: "/about" },
@@ -39,13 +39,13 @@ export default function Footer() {
           </nav>
 
           {/* Contact */}
-          <div className="space-y-3 text-sm">
+          <div className="space-y-3 text-sm sm:col-span-2 lg:col-span-1">
             <a
               href="mailto:prepdco.26@gmail.com"
               className="flex items-center gap-2 text-neutral-600 transition hover:text-black"
             >
               <Mail size={16} />
-                prepdco.26@gmail.com
+              <span className="break-all">prepdco.26@gmail.com</span>
             </a>
 
             <a
@@ -57,8 +57,8 @@ export default function Footer() {
             </a>
           </div>
 
-            {/* Socials */}
-            <div className="flex items-center gap-5 text-neutral-700">
+          {/* Socials */}
+          <div className="flex items-center gap-5 text-neutral-700">
             <a
                 href="https://www.instagram.com/prepd_26/"
                 className="group transition duration-300 hover:-translate-y-1"
@@ -103,7 +103,7 @@ export default function Footer() {
                 <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
                 </svg>
             </a>
-            </div>
+          </div>
         </div>
 
         <div className="mt-10 border-t border-neutral-200 pt-6 text-center text-sm text-neutral-500">

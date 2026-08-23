@@ -1,22 +1,23 @@
 import { BadgeDollarSign, Clock3, Package, TrendingUp } from "lucide-react";
 
+import { useNavigate } from "react-router-dom";
+
+import StatusBadge from "@/components/admin/StatusBadge";
 import Section from "@/components/ui/Section";
-
-const recentOrders = [
-  { order: "#PREPD-1001", customer: "John Doe", total: "GH₵ 500", status: "PAID" },
-  { order: "#PREPD-1002", customer: "Jane Doe", total: "GH₵ 750", status: "PROCESSING" },
-  { order: "#PREPD-1003", customer: "Alex Smith", total: "GH₵ 350", status: "PENDING" },
-];
-
-const statusStyles = {
-  PAID: "bg-green-100 text-green-700",
-  PROCESSING: "bg-blue-100 text-blue-700",
-  PENDING: "bg-amber-100 text-amber-700",
-};
+import { useAdminDashboard } from "@/hooks/adminQueries";
 
 export default function AdminDashboard() {
+  const navigate = useNavigate;
+  const { data: response, error, isPending, isFetching } = useAdminDashboard();
+  const dashboard = response?.data;
+  const metrics = dashboard?.metrics;
+  const recentOrders = dashboard?.recentOrders || [];
+
+  if (isPending && !response) {
+    return <Section className="py-8 lg:py-10"><div className="space-y-6"><div className="h-10 w-56 animate-pulse rounded-xl bg-neutral-200" /><div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">{[1, 2, 3, 4].map((item) => <div key={item} className="h-32 animate-pulse rounded-3xl bg-neutral-200" />)}</div><div className="h-72 animate-pulse rounded-3xl bg-neutral-200" /></div></Section>;
+  }
   return (
-    <Section className="pt-32">
+    <Section className="py-8 lg:py-10">
       <div className="mb-10">
         <p className="text-sm uppercase tracking-[0.25em] text-neutral-500">
           Overview
@@ -31,12 +32,16 @@ export default function AdminDashboard() {
         </p>
       </div>
 
+      {isFetching && <p className="mb-4 text-xs font-medium text-neutral-500">Updating dashboard...</p>}
+
       <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
-        <StatCard label="Total Orders" value="124" icon={Package} />
-        <StatCard label="Paid Orders" value="98" icon={BadgeDollarSign} />
-        <StatCard label="Pending Orders" value="12" icon={Clock3} />
-        <StatCard label="Revenue" value="GH₵ 45,000" icon={TrendingUp} />
+        <StatCard label="Total Orders" value={metrics?.totalOrders ?? "-"} icon={Package} />
+        <StatCard label="Pending Payments" value={metrics?.pendingPayments ?? "-"} icon={BadgeDollarSign} />
+        <StatCard label="Pending Orders" value={metrics?.pendingOrders ?? "-"} icon={Clock3} />
+        <StatCard label="Completed Orders" value={metrics?.completedOrders ?? "-"} icon={TrendingUp} />
       </div>
+
+      {error && <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">{error.message}</div>}
 
       <section className="mt-10 rounded-3xl border border-neutral-200 bg-white p-6 sm:p-8">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -47,7 +52,10 @@ export default function AdminDashboard() {
             </p>
           </div>
 
-          <button className="text-sm font-semibold underline underline-offset-4">
+          <button
+            onClick={() => navigate("/orders")}
+            className="text-sm font-semibold underline underline-offset-4"
+          >
             View All
           </button>
         </div>
@@ -65,16 +73,12 @@ export default function AdminDashboard() {
 
             <tbody>
               {recentOrders.map((row) => (
-                <tr key={row.order} className="border-b border-neutral-100 last:border-0">
-                  <td className="py-5 font-semibold">{row.order}</td>
-                  <td className="py-5 text-neutral-600">{row.customer}</td>
-                  <td className="py-5 font-semibold">{row.total}</td>
+                <tr key={row.id} className="border-b border-neutral-100 last:border-0">
+                  <td className="py-5 font-semibold">{row.reference}</td>
+                  <td className="py-5 text-neutral-600">{row.customerName}</td>
+                  <td className="py-5 font-semibold">GH₵ {Number(row.total).toFixed(2)}</td>
                   <td className="py-5">
-                    <span
-                      className={`rounded-full px-3 py-1 text-xs font-bold ${statusStyles[row.status] || "bg-neutral-100 text-neutral-700"}`}
-                    >
-                      {row.status}
-                    </span>
+                    <StatusBadge status={row.orderStatus} />
                   </td>
                 </tr>
               ))}

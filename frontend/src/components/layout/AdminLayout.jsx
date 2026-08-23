@@ -3,12 +3,15 @@ import { Outlet } from "react-router-dom";
 
 import AdminHeader from "@/components/admin/AdminHeader";
 import AdminSidebar from "@/components/admin/AdminSidebar";
+import { adminQueryClient } from "@/lib/adminQueryClient";
+import { QueryClientProvider } from "@tanstack/react-query";
 
 export default function AdminLayout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-neutral-50">
+    <QueryClientProvider client={adminQueryClient}>
+      <div className="min-h-screen bg-neutral-50">
       <AdminSidebar
         isOpen={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
@@ -19,10 +22,11 @@ export default function AdminLayout() {
           onMenuClick={() => setSidebarOpen(true)}
         />
 
-        <main className="min-h-[calc(100vh-5rem)] p-5 sm:p-8">
+        <main className="min-h-[calc(100vh-5rem)] p-5 sm:p-8 [&>section]:py-8 [&>section]:lg:py-10">
           <Outlet />
         </main>
       </div>
-    </div>
+      </div>
+    </QueryClientProvider>
   );
 }

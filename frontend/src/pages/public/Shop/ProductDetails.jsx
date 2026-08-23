@@ -25,10 +25,7 @@ export default function ProductDetails() {
 
         setProduct(response.data);
       } catch (error) {
-        console.error(
-          "Failed to fetch product:",
-          error,
-        );
+        // console.error("Failed to fetch product:", error);
 
         setError("Product not found.");
       } finally {
@@ -52,8 +49,8 @@ export default function ProductDetails() {
       </>
     );
   }
-console.log(product);
-console.log(product.images);
+  //console.log(product);
+ //console.log(product.images);
   if (error || !product) {
     return (
       <>

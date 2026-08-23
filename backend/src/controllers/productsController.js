@@ -13,6 +13,19 @@ const getProducts = async (req, res, next) => {
   }
 };
 
+const getAdminProducts = async (req, res, next) => {
+  try {
+    const products = await productService.getAllProductsForAdmin();
+
+    res.json({
+      success: true,
+      data: products,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 const getProduct = async (req, res, next) => {
   try {
     const { slug } = req.params;
@@ -27,6 +40,26 @@ const getProduct = async (req, res, next) => {
     }
 
     res.status(200).json({
+      success: true,
+      data: product,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const getProductById = async (req, res, next) => {
+  try {
+    const product = await productService.getProductById(req.params.id);
+
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
+    }
+
+    res.json({
       success: true,
       data: product,
     });
@@ -101,7 +134,9 @@ const getCustomizations = async (req, res, next) => {
 
 module.exports = {
   getProducts,
+  getAdminProducts,
   getProduct,
+  getProductById,
   createProduct,
   updateProduct,
   deleteProduct,
