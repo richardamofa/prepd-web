@@ -22,7 +22,7 @@ export default function AboutCTA() {
 
         <Link
           to="/shop"
-          className="group mt-10 inline-flex items-center rounded-full bg-white px-7 py-4 font-semibold text-black transition hover:bg-neutral-300"
+          className="group mt-10 inline-flex items-center rounded-full bg-white px-7 py-4 font-semibold text-black! transition hover:bg-neutral-300"
         >
           Shop PREP'D
 
