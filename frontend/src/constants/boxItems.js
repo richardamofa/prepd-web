@@ -29,10 +29,12 @@ export const boxItems = [
     description:
       "Highlight key concepts and important information with ease.",
   },
+ /*
   {
     number: "06",
     title: "Flash Cards",
     description:
       "A simple but powerful tool for revision and active recall.",
   },
+  */
 ];

@@ -9,7 +9,7 @@ const rotations = {
   "03": -3,
   "04": 5,
   "05": -2,
-  "06": 3,
+  //"06": 3,
 };
 
 export default function ProductDisplay({ activeItem }) {

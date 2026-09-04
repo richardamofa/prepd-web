@@ -398,9 +398,17 @@ const handleInstagramCheckout = async () => {
             <button
               type="button"
               onClick={handleInstagramCheckout}
-              className="w-full rounded-full border border-black bg-white px-6 py-4 font-semibold text-black transition hover:bg-black hover:text-white"
+              disabled={loading}
+              className="flex w-full items-center justify-center gap-2 rounded-full border border-black bg-white px-6 py-4 font-semibold text-black transition hover:bg-black hover:text-white disabled:cursor-not-allowed disabled:opacity-60"
             >
-              Checkout via Instagram
+              {loading ? (
+                <>
+                  <span className="h-4 w-4 animate-spin rounded-full border-2 border-black border-t-transparent" />
+                  Checking Out...
+                </>
+              ) : (
+                "Checkout via Instagram"
+              )}
             </button>
 
             <p className="text-center text-sm text-neutral-500">

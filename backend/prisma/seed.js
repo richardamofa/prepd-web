@@ -10,9 +10,7 @@ async function main() {
   console.log("🌱 Starting database seed...");
 
   /*
-  |--------------------------------------------------------------------------
   | CUSTOMIZATION ITEMS
-  |--------------------------------------------------------------------------
   */
 
 const customizationItems = [
@@ -139,60 +137,56 @@ for (const item of customizationItems) {
   );
 
   /*
-  |--------------------------------------------------------------------------
   | PRODUCT IMAGE HELPERS
-  |--------------------------------------------------------------------------
   */
 
   const starterBoxImages = [
     {
-      src: "/images/products/student-starter-box-1.png",
+      src: "/images/starterBox/starterbox_1.png",
       altText: "PREP'D Student Starter Box",
     },
     {
-      src: "/images/products/student-starter-box-2.png",
+      src: "/images/starterBox/starterbox_2.png",
       altText: "PREP'D Student Starter Box contents",
     },
     {
-      src: "/images/products/student-starter-box-3.png",
+      src: "/images/starterBox/starterbox_3.png",
       altText: "PREP'D Student Starter Box essentials",
     },
   ];
 
   const levelUpBoxImages = [
     {
-      src: "/images/products/level-up-box-1.png",
+      src: "/images/levelUpBox/levelupbox_1.png",
       altText: "PREP'D Level Up Box",
     },
     {
-      src: "/images/products/level-up-box-2.png",
+      src: "/images/products/levelupbox_2.png",
       altText: "PREP'D Level Up Box contents",
     },
     {
-      src: "/images/products/level-up-box-3.png",
+      src: "/images/levelUpBox/levelupbox_3.png",
       altText: "PREP'D Level Up Box essentials",
     },
   ];
 
   const levelUpPlusBoxImages = [
     {
-      src: "/images/products/level-up-plus-box-1.png",
+      src: "/images/levelUpPlusBox/levelupplusbox_1.png",
       altText: "PREP'D Level Up+ Box",
     },
     {
-      src: "/images/products/level-up-plus-box-2.png",
+      src: "/images/levelUpPlusBox/levelupplusbox_2.png",
       altText: "PREP'D Level Up+ Box contents",
     },
     {
-      src: "/images/products/level-up-plus-box-3.png",
+      src: "/images/levelUpPlusBox/levelupplusbox_3.png",
       altText: "PREP'D Level Up+ Box essentials",
     },
   ];
 
   /*
-  |--------------------------------------------------------------------------
   | STARTER BOX
-  |--------------------------------------------------------------------------
   */
 
   const starterBox = await prisma.product.upsert({
@@ -204,7 +198,7 @@ for (const item of customizationItems) {
       name: "PREP'D Student Starter Box",
       category: "Student Essentials",
       currency: "GH₵",
-      price: 350,
+      price: 95,
 
       description:
         "The essentials you need to start your semester prepared and ready to go.",
@@ -299,7 +293,7 @@ for (const item of customizationItems) {
 
       currency: "GH₵",
 
-      price: 350,
+      price: 95,
 
       description:
         "The essentials you need to start your semester prepared and ready to go.",
@@ -383,9 +377,7 @@ for (const item of customizationItems) {
   });
 
   /*
-  |--------------------------------------------------------------------------
   | LEVEL UP BOX
-  |--------------------------------------------------------------------------
   */
 
   const levelUpBox = await prisma.product.upsert({
@@ -397,7 +389,7 @@ for (const item of customizationItems) {
       name: "PREP'D Level Up Box",
       category: "Student Essentials",
       currency: "GH₵",
-      price: 500,
+      price: 255,
 
       description:
         "More essentials, more organization, and everything you need to level up your semester.",
@@ -537,7 +529,7 @@ for (const item of customizationItems) {
 
       currency: "GH₵",
 
-      price: 500,
+      price: 255,
 
       description:
         "More essentials, more organization, and everything you need to level up your semester.",
@@ -666,9 +658,7 @@ for (const item of customizationItems) {
   });
 
   /*
-  |--------------------------------------------------------------------------
   | LEVEL UP+ BOX
-  |--------------------------------------------------------------------------
   */
 
   const levelUpPlusBox = await prisma.product.upsert({
@@ -680,7 +670,7 @@ for (const item of customizationItems) {
       name: "PREP'D Level Up+ Box",
       category: "Premium Student Essentials",
       currency: "GH₵",
-      price: 750,
+      price: 330,
 
       description:
         "The ultimate PREP'D experience with everything in the Level Up Box plus premium everyday essentials.",
@@ -838,7 +828,7 @@ for (const item of customizationItems) {
 
       currency: "GH₵",
 
-      price: 750,
+      price: 330,
 
       description:
         "The ultimate PREP'D experience with everything in the Level Up Box plus premium everyday essentials.",
@@ -985,9 +975,7 @@ for (const item of customizationItems) {
   });
 
   /*
-  |--------------------------------------------------------------------------
   | ADMIN USER
-  |--------------------------------------------------------------------------
   */
 
   const hashedPassword = await hashPassword(
