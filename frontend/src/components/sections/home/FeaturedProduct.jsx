@@ -34,7 +34,7 @@ export default function FeaturedProduct() {
 
             <div className="mt-10 flex flex-col gap-4 sm:flex-row">
               <Button className="w-full sm:w-auto">
-                <a href="/shop" className="inline-flex w-full" >
+                <a href="/shop" className="inline-flex w-full items-center justify-center" >
                 Shop Now
                 </a>
               </Button>
