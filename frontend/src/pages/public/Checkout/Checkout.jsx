@@ -131,7 +131,11 @@ const handleInstagramCheckout = async () => {
       cartTotal,
     });
 
-    await navigator.clipboard.writeText(orderMessage);
+    try {
+      await navigator.clipboard.writeText(orderMessage);
+    } catch (clipboardError) {
+      void clipboardError;
+    }
 
     setInstagramOrder({
       reference: data.reference,
@@ -140,7 +144,7 @@ const handleInstagramCheckout = async () => {
 
     setInstagramModalOpen(true);
     clearCart();
-    showToast("Instagram order created. Your order details have been sent.", "success");
+    showToast("Instagram order created. Copy the details and send them in Instagram.", "success");
   } catch (error) {
     // console.error(error);
     setError(
