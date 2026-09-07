@@ -1,6 +1,7 @@
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import Loader from "@/components/common/Loader";
 import ScrollToHash from "@/components/common/ScrollToHash";
+import SEO from "@/components/common/SEO";
 import AdminLayout from "@/components/layout/AdminLayout";
 
 import { useEffect, useState } from "react";
@@ -53,6 +54,7 @@ export default function App() {
   return (
     <>
       <ScrollToHash />
+      <SEO />
 
       <Routes>
         {/* PUBLIC ROUTES */}

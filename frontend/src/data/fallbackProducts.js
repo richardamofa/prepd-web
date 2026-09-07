@@ -1,7 +1,6 @@
-// src/data/fallbackProducts.js
-import level from "@/images/products/level-up-box-1.png";
-import plus from "@/images/products/level-up-plus-box-1.png";
-import starter from "@/images/products/student-starter-box-1.png";
+const level = "/images/levelUpBox/levelupbox_1.png";
+const plus = "/images/levelUpPlusBox/levelupplusbox_1.png";
+const starter = "/images/starterBox/starterbox_1.png";
 
 export const fallbackProducts = [
   {
@@ -16,6 +15,7 @@ export const fallbackProducts = [
     images: [
       {
         src: plus,
+        altText: "PREP'D Level Up+ Box",
       },
     ],
   },
@@ -31,6 +31,7 @@ export const fallbackProducts = [
     images: [
       {
         src: level,
+        altText: "PREP'D Level Up Box",
       },
     ],
   },
@@ -46,6 +47,7 @@ export const fallbackProducts = [
     images: [
       {
         src: starter,
+        altText: "PREP'D Student Starter Box",
       },
     ],
   },

@@ -51,7 +51,11 @@ export default function InstagramCheckoutModal({
   if (!isOpen) return null;
 
   const handleCopy = async () => {
-    await navigator.clipboard.writeText(orderMessage);
+    try {
+      await navigator.clipboard.writeText(orderMessage);
+    } catch (clipboardError) {
+      void clipboardError;
+    }
   };
 
   return (
@@ -127,7 +131,7 @@ export default function InstagramCheckoutModal({
         </div>
 
         <p className="mt-5 text-center text-xs leading-5 text-neutral-500">
-          Your order details have been copied. Paste them into the PREP'D
+          Copy the order details below, paste them into the PREP'D
           Instagram chat and send the message.
         </p>
       </div>

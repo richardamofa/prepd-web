@@ -1,6 +1,8 @@
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 
+const fallbackImage = "/images/starterBox/starterbox_1.png";
+
 export default function ProductCard({ product }) {
   return (
     <article className="group">
@@ -10,8 +12,14 @@ export default function ProductCard({ product }) {
       >
         <div className="flex aspect-square items-center justify-center p-10 transition-transform duration-500 group-hover:scale-[1.03]">
         <img
-          src={product.images?.[0]?.src}
-          alt={product.name}
+          src={product.images?.[0]?.src || fallbackImage}
+          alt={product.images?.[0]?.altText || product.name}
+          loading="lazy"
+          decoding="async"
+          onError={(event) => {
+            if (event.currentTarget.src.endsWith(fallbackImage)) return;
+            event.currentTarget.src = fallbackImage;
+          }}
           className="w-full max-w-sm object-contain"
         />
         </div>

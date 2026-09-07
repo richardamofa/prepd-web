@@ -1,16 +1,13 @@
 import { useEffect, useState } from "react";
 
 import ProductCard from "@/components/common/ProductCard";
-import ProductCardSkeleton from "@/components/common/ProductCardSkeleton";
 import Section from "@/components/ui/Section";
 
-import { useToast } from "@/context/ToastContext";
+import { fallbackProducts } from "@/data/fallbackProducts";
 import api from "@/services/api";
 
 export default function ProductCollection() {
-  const { showToast } = useToast();
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [products, setProducts] = useState(fallbackProducts);
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -23,19 +20,10 @@ export default function ProductCollection() {
         if (!mounted) return;
 
         setProducts(response.data || []);
-      } catch (error) {
-        // console.error("Failed to fetch products:", error);
-
+      } catch {
         if (!mounted) return;
 
-        setError(
-          "We couldn't load our products right now. Please try again in a moment."
-        );
-        showToast("We couldn't load products right now.", "error");
-      } finally {
-        if (mounted) {
-          setLoading(false);
-        }
+        setError("Showing our saved product list while the catalogue reconnects.");
       }
     };
 
@@ -67,31 +55,17 @@ export default function ProductCollection() {
         </p>
       </div>
 
-      {loading ? (
-        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
-          {Array.from({ length: 3 }).map((_, index) => (
-            <ProductCardSkeleton key={index} />
-          ))}
-        </div>
-      ) : error ? (
-        <div className="rounded-3xl border border-red-200 bg-red-50 p-8 text-center">
-          <p className="text-lg font-semibold text-red-700">
-            Unable to load products
-          </p>
+      <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
+        {products.map((product) => (
+          <ProductCard
+            key={product.id}
+            product={product}
+          />
+        ))}
+      </div>
 
-          <p className="mt-2 text-sm text-red-600">
-            {error}
-          </p>
-        </div>
-      ) : (
-        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
-          {products.map((product) => (
-            <ProductCard
-              key={product.id}
-              product={product}
-            />
-          ))}
-        </div>
+      {error && (
+        <p className="mt-6 text-center text-sm text-neutral-500">{error}</p>
       )}
     </Section>
   );

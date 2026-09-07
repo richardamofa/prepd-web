@@ -3,6 +3,7 @@ const productService = require("../services/productsService");
 const getProducts = async (req, res, next) => {
   try {
     const products = await productService.getAllProducts();
+    res.set("Cache-Control", "public, max-age=60, stale-while-revalidate=300");
 
     res.status(200).json({
       success: true,

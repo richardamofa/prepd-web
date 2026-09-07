@@ -7,12 +7,19 @@ const includeProduct = {
       sortOrder: "asc",
     },
   },
-
   items: {
     include: {
       customizationItem: true,
     },
   },
+};
+
+const includePublicProduct = {
+    images: {
+      orderBy: {
+        sortOrder: "asc",
+      },
+    },
 };
 
 const getAllProducts = async () => {
@@ -21,7 +28,7 @@ const getAllProducts = async () => {
       isActive: true,
     },
 
-    include: includeProduct,
+    include: includePublicProduct,
 
     orderBy: {
       createdAt: "desc",

@@ -161,7 +161,7 @@ for (const item of customizationItems) {
       altText: "PREP'D Level Up Box",
     },
     {
-      src: "/images/products/levelupbox_2.png",
+      src: "/images/levelUpBox/levelupbox_2.png",
       altText: "PREP'D Level Up Box contents",
     },
     {
