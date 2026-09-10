@@ -144,7 +144,7 @@ const handleInstagramCheckout = async () => {
 
     setInstagramModalOpen(true);
     clearCart();
-    showToast("Instagram order created. Copy the details and send them in Instagram.", "success");
+    showToast("Instagram order created. Details have been processed and sent!.", "success");
   } catch (error) {
     // console.error(error);
     setError(
