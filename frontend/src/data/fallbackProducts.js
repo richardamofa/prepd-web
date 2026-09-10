@@ -7,7 +7,7 @@ export const fallbackProducts = [
     id: "plus",
     slug: "prepd-level-up-plus-box",
     name: "PREP'D Level Up+ Box",
-    price: 750,
+    price: 225,
     currency: "GH₵",
     category: "Premium Student Essentials",
     description:
@@ -23,7 +23,7 @@ export const fallbackProducts = [
     id: "level",
     slug: "prepd-level-up-box",
     name: "PREP'D Level Up Box",
-    price: 500,
+    price: 195,
     currency: "GH₵",
     category: "Student Essentials",
     description:
@@ -39,7 +39,7 @@ export const fallbackProducts = [
     id: "starter",
     slug: "prepd-student-starter-box",
     name: "PREP'D Student Starter Box",
-    price: 350,
+    price: 95,
     currency: "GH₵",
     category: "Student Essentials",
     description:
