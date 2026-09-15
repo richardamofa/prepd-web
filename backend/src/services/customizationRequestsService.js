@@ -24,7 +24,27 @@ const listRequests = async ({ page, pageSize, skip, search, status, productId })
 
 const getRequest = (id) => prisma.customizationRequest.findUnique({ where: { id }, include });
 
-const updateRequest = (id, data) => prisma.customizationRequest.update({ where: { id }, data, include });
+const updateRequest = async (id, data, { includeTransition = false } = {}) => {
+  if (!includeTransition) return prisma.customizationRequest.update({ where: { id }, data, include });
+
+  return prisma.$transaction(async (tx) => {
+    let completionTransition = false;
+    if (data.status === "COMPLETED") {
+      const claimed = await tx.customizationRequest.updateMany({ where: { id, status: { not: "COMPLETED" } }, data });
+      completionTransition = claimed.count === 1;
+      if (!completionTransition) {
+        const existing = await tx.customizationRequest.findUnique({ where: { id }, select: { id: true } });
+        if (!existing) return null;
+      }
+    } else {
+      const existing = await tx.customizationRequest.findUnique({ where: { id }, select: { id: true } });
+      if (!existing) return null;
+      await tx.customizationRequest.update({ where: { id }, data });
+    }
+    const request = await tx.customizationRequest.findUnique({ where: { id }, include });
+    return { request, completionTransition };
+  });
+};
 
 const deleteRequest = (id) => prisma.customizationRequest.delete({ where: { id } });
 

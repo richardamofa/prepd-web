@@ -1,6 +1,7 @@
 const ordersService = require(
   "../services/ordersService",
 );
+const { sendOrderConfirmationEmail, sendOrderCompletionEmail, sendAdminOrderNotificationEmail } = require("../services/emailService");
 const AppError = require("../utils/AppError");
 
 const createOrder = async (
@@ -11,6 +12,17 @@ const createOrder = async (
   try {
     const order =
       await ordersService.createOrder(req.body);
+
+    try {
+      await sendOrderConfirmationEmail(order);
+    } catch (emailError) {
+      console.error("Order confirmation email failed:", emailError);
+    }
+    try {
+      await sendAdminOrderNotificationEmail(order);
+    } catch (emailError) {
+      console.error("Admin order notification email failed:", emailError);
+    }
 
     res.status(201).json({
       success: true,
@@ -82,16 +94,25 @@ const updateOrderStatus = async (
 ) => {
   try {
     if (!["PENDING", "PROCESSING", "COMPLETED", "CANCELLED"].includes(req.body.orderStatus)) throw new AppError("Order status is invalid", 400);
-    const order =
+    const updateResult =
       await ordersService.updateOrderStatus(
         req.params.id,
         req.body.orderStatus,
+        { includeTransition: true },
       );
+
+    if (updateResult.completionTransition) {
+      try {
+        await sendOrderCompletionEmail(updateResult.order);
+      } catch (emailError) {
+        console.error("Order completion email failed:", emailError);
+      }
+    }
 
     res.status(200).json({
       success: true,
       message: "Order status updated successfully",
-      data: order,
+      data: updateResult.order,
     });
   } catch (error) {
     next(error);

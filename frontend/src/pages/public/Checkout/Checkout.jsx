@@ -411,7 +411,7 @@ const handleInstagramCheckout = async () => {
                   Checking Out...
                 </>
               ) : (
-                "Checkout via Instagram"
+                "Checkout via Prep'd System"
               )}
             </button>
 

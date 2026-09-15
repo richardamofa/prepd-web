@@ -6,13 +6,13 @@ import { useToast } from "@/context/ToastContext";
 import api from "@/services/api";
 
 import {
-  customizationItems,
-  preparationOptions,
+    preparationOptions,
 } from "@/constants/customizationOptions";
 
 export default function CustomizationForm({
   selectedItems,
   setSelectedItems,
+  customizationItems: availableCustomizationItems,
 }) {
   const { showToast } = useToast();
   const [formData, setFormData] = useState({
@@ -158,14 +158,15 @@ export default function CustomizationForm({
         </div>
 
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-          {customizationItems.map((item) => {
-            const isSelected = selectedItems.includes(item.id);
+          {availableCustomizationItems.map((item) => {
+            const itemId = item.slug || item.id;
+            const isSelected = selectedItems.includes(itemId);
 
             return (
               <button
                 key={item.id}
                 type="button"
-                onClick={() => toggleItem(item.id)}
+                onClick={() => toggleItem(itemId)}
                 className={`relative rounded-xl border p-4 text-left transition ${
                   isSelected
                     ? "border-black bg-black text-white"

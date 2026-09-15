@@ -1,3 +1,4 @@
+import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 
 import CustomizationForm from "@/components/common/CustomizationForm";
@@ -5,9 +6,18 @@ import CustomizationProductDisplay from "@/components/common/CustomizationProduc
 
 import Section from "@/components/ui/Section";
 import SectionHeading from "@/components/ui/SectionHeading";
+import { customizationItems as fallbackCustomizationItems } from "@/constants/customizationOptions";
+import api from "@/services/api";
 
 export default function CustomizationBuilder() {
   const [selectedItems, setSelectedItems] = useState([]);
+  const { data: response, isPending, isError } = useQuery({
+    queryKey: ["customizations"],
+    queryFn: api.customizations.getAll,
+  });
+  const customizationItems = isPending || isError
+    ? fallbackCustomizationItems
+    : response?.data || [];
 
   return (
     <Section className="bg-neutral-50">
@@ -24,6 +34,7 @@ export default function CustomizationBuilder() {
         <div className="lg:sticky lg:top-28">
           <CustomizationProductDisplay
             selectedItems={selectedItems}
+            customizationItems={customizationItems}
           />
         </div>
 
@@ -33,6 +44,7 @@ export default function CustomizationBuilder() {
           <CustomizationForm
             selectedItems={selectedItems}
             setSelectedItems={setSelectedItems}
+            customizationItems={customizationItems}
           />
         </div>
       </div>

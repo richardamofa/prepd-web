@@ -389,7 +389,7 @@ for (const item of customizationItems) {
       name: "PREP'D Level Up Box",
       category: "Student Essentials",
       currency: "GH₵",
-      price: 255,
+      price: 195,
 
       description:
         "More essentials, more organization, and everything you need to level up your semester.",
@@ -529,7 +529,7 @@ for (const item of customizationItems) {
 
       currency: "GH₵",
 
-      price: 255,
+      price: 195,
 
       description:
         "More essentials, more organization, and everything you need to level up your semester.",
@@ -670,7 +670,7 @@ for (const item of customizationItems) {
       name: "PREP'D Level Up+ Box",
       category: "Premium Student Essentials",
       currency: "GH₵",
-      price: 330,
+      price: 225,
 
       description:
         "The ultimate PREP'D experience with everything in the Level Up Box plus premium everyday essentials.",
@@ -828,7 +828,7 @@ for (const item of customizationItems) {
 
       currency: "GH₵",
 
-      price: 330,
+      price: 225,
 
       description:
         "The ultimate PREP'D experience with everything in the Level Up Box plus premium everyday essentials.",
