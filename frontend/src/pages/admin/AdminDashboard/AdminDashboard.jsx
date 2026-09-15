@@ -7,7 +7,7 @@ import Section from "@/components/ui/Section";
 import { useAdminDashboard } from "@/hooks/adminQueries";
 
 export default function AdminDashboard() {
-  const navigate = useNavigate;
+  const navigate = useNavigate();
   const { data: response, error, isPending, isFetching } = useAdminDashboard();
   const dashboard = response?.data;
   const metrics = dashboard?.metrics;
@@ -53,7 +53,7 @@ export default function AdminDashboard() {
           </div>
 
           <button
-            onClick={() => navigate("/orders")}
+            onClick={() => navigate("/admin/orders")}
             className="text-sm font-semibold underline underline-offset-4"
           >
             View All

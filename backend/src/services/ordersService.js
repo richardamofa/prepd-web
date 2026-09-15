@@ -139,23 +139,29 @@ const getOrderById = async (id) => {
   });
 };
 
-const updateOrderStatus = async (
-  id,
-  orderStatus
-) => {
-  const order = await prisma.order.findUnique({ where: { id }, select: { id: true } });
-  if (!order) throw new AppError("Order not found", 404);
+const updateOrderStatus = async (id, orderStatus, { includeTransition = false } = {}) => {
+  if (!includeTransition) {
+    const order = await prisma.order.findUnique({ where: { id }, select: { id: true } });
+    if (!order) throw new AppError("Order not found", 404);
+    return prisma.order.update({ where: { id }, data: { orderStatus }, include: orderInclude });
+  }
 
-  return prisma.order.update({
-    where: {
-      id,
-    },
-
-    data: {
-      orderStatus,
-    },
-
-    include: orderInclude,
+  return prisma.$transaction(async (tx) => {
+    let completionTransition = false;
+    if (orderStatus === "COMPLETED") {
+      const claimed = await tx.order.updateMany({ where: { id, orderStatus: { not: "COMPLETED" } }, data: { orderStatus } });
+      completionTransition = claimed.count === 1;
+      if (!completionTransition) {
+        const existing = await tx.order.findUnique({ where: { id }, select: { id: true } });
+        if (!existing) throw new AppError("Order not found", 404);
+      }
+    } else {
+      const existing = await tx.order.findUnique({ where: { id }, select: { id: true } });
+      if (!existing) throw new AppError("Order not found", 404);
+      await tx.order.update({ where: { id }, data: { orderStatus } });
+    }
+    const order = await tx.order.findUnique({ where: { id }, include: orderInclude });
+    return { order, completionTransition };
   });
 };
 

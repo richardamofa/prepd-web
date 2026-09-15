@@ -1,4 +1,5 @@
 const service = require("../services/customizationRequestsService");
+const { sendCustomizationRequestConfirmationEmail, sendCustomizationCompletionEmail, sendAdminCustomizationRequestNotificationEmail } = require("../services/emailService");
 const { Prisma } = require("@prisma/client");
 const { text, email, phone, cuid, pagination } = require("../utils/validation");
 const AppError = require("../utils/AppError");
@@ -18,6 +19,16 @@ const create = async (req, res, next) => {
         return new Prisma.Decimal(body.budget);
       })(),
     });
+    try {
+      await sendCustomizationRequestConfirmationEmail(result);
+    } catch (emailError) {
+      console.error("Customization request confirmation email failed:", emailError);
+    }
+    try {
+      await sendAdminCustomizationRequestNotificationEmail(result);
+    } catch (emailError) {
+      console.error("Admin customization request notification email failed:", emailError);
+    }
     res.status(201).json({ success: true, data: result });
   } catch (error) { next(error); }
 };
@@ -40,8 +51,16 @@ const update = async (req, res, next) => {
     if (req.body.status !== undefined) { if (!validStatuses.includes(req.body.status)) throw new AppError("Status is invalid", 400); data.status = req.body.status; }
     if (req.body.adminNotes !== undefined) data.adminNotes = req.body.adminNotes ? text(req.body.adminNotes, "Admin notes", { required: false, max: 5000 }) : null;
     if (req.body.assignedToId !== undefined) data.assignedToId = req.body.assignedToId ? cuid(req.body.assignedToId, "Assigned admin ID") : null;
-    const result = await service.updateRequest(cuid(req.params.id), data);
-    res.json({ success: true, data: result });
+    const updateResult = await service.updateRequest(cuid(req.params.id), data, { includeTransition: true });
+    if (!updateResult) return res.status(404).json({ success: false, message: "Customization request not found" });
+    if (updateResult.completionTransition) {
+      try {
+        await sendCustomizationCompletionEmail(updateResult.request);
+      } catch (emailError) {
+        console.error("Customization completion email failed:", emailError);
+      }
+    }
+    res.json({ success: true, data: updateResult.request });
   } catch (error) { next(error); }
 };
 

@@ -1,0 +1,18 @@
+const React = require("react");
+const { Body, Container, Head, Heading, Hr, Html, Img, Preview, Row, Section, Text } = require("@react-email/components");
+
+const h = React.createElement;
+const colors = { ink: "#171717", muted: "#737373", border: "#e5e5e5", soft: "#f5f5f5", white: "#ffffff" };
+const money = (value, currency = "GH₵") => `${currency} ${Number(value || 0).toFixed(2)}`;
+const formatDate = (date) => new Intl.DateTimeFormat("en-GH", { dateStyle: "long", timeZone: "Africa/Accra" }).format(new Date(date));
+const labelStyle = { color: colors.muted, fontSize: "12px", letterSpacing: "1.5px", lineHeight: "20px", margin: "0", textTransform: "uppercase" };
+const valueStyle = { color: colors.ink, fontSize: "15px", lineHeight: "22px", margin: "4px 0 0" };
+const detail = (label, value) => h(Section, { style: { padding: "0 0 16px" } }, h(Text, { style: labelStyle }, label), h(Text, { style: valueStyle }, value));
+
+function AdminOrderNotificationEmail({ order }) {
+  const logoUrl = process.env.PREPD_EMAIL_LOGO_URL;
+  const items = order.items || [];
+  return h(Html, null, h(Head), h(Preview, null, `New PREP'D order ${order.reference}`), h(Body, { style: { backgroundColor: colors.soft, fontFamily: "Arial, sans-serif", margin: "0", padding: "32px 16px" } }, h(Container, { style: { backgroundColor: colors.white, margin: "0 auto", maxWidth: "620px", padding: "0 32px" } }, h(Section, { style: { padding: "32px 0 26px" } }, logoUrl ? h(Img, { src: logoUrl, alt: "PREP'D", width: "120", style: { display: "block" } }) : h(Text, { style: { color: colors.ink, fontSize: "24px", fontWeight: "800", margin: "0" } }, "PREP'D")), h(Hr, { style: { borderColor: colors.border, margin: "0" } }), h(Section, { style: { padding: "38px 0 20px" } }, h(Text, { style: { color: colors.muted, fontSize: "13px", letterSpacing: "2px", margin: "0 0 14px", textTransform: "uppercase" } }, "New order"), h(Heading, { as: "h1", style: { color: colors.ink, fontSize: "30px", lineHeight: "38px", margin: "0 0 14px" } }, `A new order is ready, ${order.customerName}.`), h(Text, { style: { color: colors.muted, fontSize: "16px", lineHeight: "26px", margin: "0" } }, "A customer has successfully placed a new PREP'D order.")), h(Section, { style: { backgroundColor: colors.soft, padding: "20px 22px" } }, detail("Order reference", order.reference), detail("Customer name", order.customerName), detail("Customer email", order.customerEmail), detail("Customer phone", order.customerPhone), detail("Submission date", formatDate(order.createdAt)), detail("Current status", String(order.orderStatus || "PENDING").replace(/_/g, " "))), h(Heading, { as: "h2", style: { color: colors.ink, fontSize: "20px", margin: "34px 0 16px" } }, "Items"), ...items.map((item) => h(Row, { key: item.id, style: { borderBottom: `1px solid ${colors.border}` } }, h(Text, { style: { color: colors.ink, fontSize: "15px", margin: "14px 0" } }, `${item.productName} x ${item.quantity}`), h(Text, { style: { color: colors.ink, fontSize: "15px", margin: "14px 0", textAlign: "right" } }, money(item.totalPrice, order.currency)))), h(Hr, { style: { borderColor: colors.border, margin: "20px 0 0" } }), h(Row, null, h(Text, { style: { color: colors.ink, fontSize: "17px", fontWeight: "700", margin: "16px 0 28px" } }, "Total"), h(Text, { style: { color: colors.ink, fontSize: "17px", fontWeight: "700", margin: "16px 0 28px", textAlign: "right" } }, money(order.total, order.currency))), h(Hr, { style: { borderColor: colors.border, margin: "0" } }), h(Section, { style: { padding: "26px 0 34px" } }, h(Text, { style: { color: colors.muted, fontSize: "13px", lineHeight: "21px", margin: "0" } }, "Please review the order in the PREP'D admin dashboard.")))));
+}
+
+module.exports = AdminOrderNotificationEmail;

@@ -1,12 +1,6 @@
 import { AnimatePresence, motion } from "framer-motion";
 
 import box from "@/assets/contents/customize-box.png";
-import { customizationItems } from "@/constants/customizationOptions";
-
-const itemLookup = Object.fromEntries(
-  customizationItems.map((item) => [item.id, item.image]),
-);
-
 const fallbackPositions = [
   "-left-6 top-16 w-40 rotate-[-15deg]",
   "right-0 top-20 w-36 rotate-[15deg]",
@@ -30,7 +24,12 @@ const itemPositions = {
 
 export default function CustomizationProductDisplay({
   selectedItems,
+  customizationItems,
 }) {
+  const itemLookup = Object.fromEntries(
+    customizationItems.map((item) => [item.slug || item.id, item.image]),
+  );
+
   return (
     <div className="relative mx-auto flex min-h-125 w-full max-w-xl items-center justify-center overflow-hidden rounded-4xl bg-neutral-100 p-8 md:min-h-162.5 md:rounded-[3rem]">
       {/* Background Details */}
