@@ -4,7 +4,12 @@ const { PrismaClient } = require("@prisma/client");
 
 const { hashPassword } = require("../src/utils/password");
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient({
+  transactionOptions: {
+    maxWait: 10000,
+    timeout: 30000,
+  },
+});
 
 async function main() {
   console.log("🌱 Starting database seed...");
@@ -30,6 +35,18 @@ const customizationItems = [
     "pens",
     "Pens",
     "Smooth-writing pens for taking notes, making plans, and getting things done.",
+  ],
+
+  [
+    "pencils",
+    "Pencils",
+    "Reliable pencils for sketching, writing, and everyday note-taking.",
+  ],
+
+  [
+    "binder",
+    "Binder",
+    "A sturdy binder for organizing documents, notes, and important papers.",
   ],
 
   [
@@ -99,9 +116,21 @@ const customizationItems = [
   ],
 
   [
-    "stanley-cup",
-    "Stanley Cup",
-    "A reusable cup designed to help you keep your drink close throughout the day.",
+    "clipboard",
+    "Clipboard",
+    "A practical writing essential for holding papers securely and keeping notes organized.",
+  ],
+
+  [
+    "water-bottle",
+    "Glass Water Bottle",
+    "A reusable glass bottle for keeping your water fresh and easy to carry.",
+  ],
+
+  [
+    "mini-water-bottle",
+    "Mini Water Bottle",
+    "A compact reusable glass bottle for keeping your water fresh wherever you go.",
   ],
 
   [
@@ -109,11 +138,35 @@ const customizationItems = [
     "Keychain",
     "A small everyday accessory for keeping your keys together and easy to find.",
   ],
+
+  [
+    "clippers",
+    "Clippers",
+    "A compact grooming essential for keeping your personal-care kit complete.",
+  ],
+
+  [
+    "stanley-cup",
+    "Stanley Cup",
+    "A reusable cup for keeping your favorite drinks close throughout the day.",
+  ],
+
+  [
+    "flashcards",
+    "Flashcards",
+    "A simple study tool for reviewing key ideas and preparing for exams.",
+  ],
+
+  [
+    "planner",
+    "Planner",
+    "A practical planner for organizing deadlines, tasks, and everyday plans.",
+  ],
 ].map(([slug, name, description]) => ({
   slug,
   name,
   description,
-  image: `/images/customizations/${slug}.png`,
+  image: `/images/customizations/${slug === "clippers" ? "clipper" : slug}.png`,
 }));
 
 for (const item of customizationItems) {
@@ -237,10 +290,28 @@ for (const item of customizationItems) {
           },
 
           {
+            quantity: 2,
+            customizationItem: {
+              connect: {
+                slug: "pencils",
+              },
+            },
+          },
+
+          {
             quantity: 1,
             customizationItem: {
               connect: {
                 slug: "sticky-notes",
+              },
+            },
+          },
+
+          {
+            quantity: 1,
+            customizationItem: {
+              connect: {
+                slug: "binder",
               },
             },
           },
@@ -328,10 +399,28 @@ for (const item of customizationItems) {
           },
 
           {
+            quantity: 2,
+            customizationItem: {
+              connect: {
+                slug: "pencils",
+              },
+            },
+          },
+
+          {
             quantity: 1,
             customizationItem: {
               connect: {
                 slug: "sticky-notes",
+              },
+            },
+          },
+
+          {
+            quantity: 1,
+            customizationItem: {
+              connect: {
+                slug: "binder",
               },
             },
           },
@@ -419,6 +508,15 @@ for (const item of customizationItems) {
           },
 
           {
+            quantity: 2,
+            customizationItem: {
+              connect: {
+                slug: "pencils",
+              },
+            },
+          },
+
+          {
             quantity: 1,
             customizationItem: {
               connect: {
@@ -440,7 +538,34 @@ for (const item of customizationItems) {
             quantity: 1,
             customizationItem: {
               connect: {
+                slug: "binder",
+              },
+            },
+          },
+
+          {
+            quantity: 1,
+            customizationItem: {
+              connect: {
+                slug: "clippers",
+              },
+            },
+          },
+
+          {
+            quantity: 1,
+            customizationItem: {
+              connect: {
                 slug: "mini-notebook",
+              },
+            },
+          },
+
+          {
+            quantity: 1,
+            customizationItem: {
+              connect: {
+                slug: "mini-water-bottle",
               },
             },
           },
@@ -516,7 +641,7 @@ for (const item of customizationItems) {
               },
             },
           },
-        ],
+        ]
       },
     },
 
@@ -555,6 +680,15 @@ for (const item of customizationItems) {
           },
 
           {
+            quantity: 2,
+            customizationItem: {
+              connect: {
+                slug: "pencils",
+              },
+            },
+          },
+
+          {
             quantity: 1,
             customizationItem: {
               connect: {
@@ -576,7 +710,34 @@ for (const item of customizationItems) {
             quantity: 1,
             customizationItem: {
               connect: {
+                slug: "binder",
+              },
+            },
+          },
+
+          {
+            quantity: 1,
+            customizationItem: {
+              connect: {
+                slug: "clippers",
+              },
+            },
+          },
+
+          {
+            quantity: 1,
+            customizationItem: {
+              connect: {
                 slug: "mini-notebook",
+              },
+            },
+          },
+
+          {
+            quantity: 1,
+            customizationItem: {
+              connect: {
+                slug: "mini-water-bottle",
               },
             },
           },
@@ -700,6 +861,15 @@ for (const item of customizationItems) {
           },
 
           {
+            quantity: 2,
+            customizationItem: {
+              connect: {
+                slug: "pencils",
+              },
+            },
+          },
+
+          {
             quantity: 1,
             customizationItem: {
               connect: {
@@ -712,7 +882,25 @@ for (const item of customizationItems) {
             quantity: 1,
             customizationItem: {
               connect: {
+                slug: "clippers",
+              },
+            },
+          },
+
+          {
+            quantity: 1,
+            customizationItem: {
+              connect: {
                 slug: "notebook",
+              },
+            },
+          },
+
+          {
+            quantity: 1,
+            customizationItem: {
+              connect: {
+                slug: "binder",
               },
             },
           },
@@ -802,7 +990,7 @@ for (const item of customizationItems) {
             quantity: 1,
             customizationItem: {
               connect: {
-                slug: "stanley-cup",
+                slug: "water-bottle",
               },
             },
           },

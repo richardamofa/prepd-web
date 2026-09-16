@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 export default function ProductGallery({
   images = [],
 }) {
+  const placeholder = "/images/placeholders/product-placeholder.png";
+  const imageSource = (src) => typeof src === "string" && src.trim() && src.trim().toLowerCase() !== "preview" ? src : placeholder;
   const [activeImage, setActiveImage] = useState(0);
 
   // Reset selected image whenever a different product loads
@@ -57,7 +59,7 @@ export default function ProductGallery({
       {/* Main Image */}
       <div className="flex aspect-square items-center justify-center overflow-hidden rounded-4xl bg-neutral-100 p-8 md:p-16">
         <img
-          src={currentImage.src}
+          src={imageSource(currentImage.src)}
           alt={
             currentImage.altText ||
             currentImage.name ||
@@ -90,7 +92,7 @@ export default function ProductGallery({
           >
             <div className="flex aspect-square items-center justify-center p-3">
               <img
-                src={image.src}
+                src={imageSource(image.src)}
                 alt={
                   image.altText ||
                   "Thumbnail"
