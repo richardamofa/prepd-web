@@ -8,6 +8,8 @@ import App from "./App";
 import { CartProvider } from "./context/CartContext";
 import { ToastProvider } from "./context/ToastContext";
 
+import { Analytics } from "@vercel/analytics/react";
+
 import "@/styles/global.css";
 
 createRoot(document.getElementById("root")).render(
@@ -17,6 +19,7 @@ createRoot(document.getElementById("root")).render(
         <CartProvider>
           <ToastProvider>
             <App />
+            <Analytics />
           </ToastProvider>
         </CartProvider>
       </BrowserRouter>
