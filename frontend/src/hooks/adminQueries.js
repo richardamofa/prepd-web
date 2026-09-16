@@ -6,8 +6,6 @@ import {
 
 import api from "@/services/api";
 
-const EMPTY_LIST = [];
-
 export const adminQueryKeys = {
   dashboard: ["admin", "dashboard"],
   products: ["admin", "products"],
@@ -16,12 +14,20 @@ export const adminQueryKeys = {
   order: (orderId) => ["admin", "order", orderId],
   messages: ["admin", "messages"],
   customizationRequests: ["admin", "customization-requests"],
+  notifications: ["admin", "notifications"],
 };
 
 export function useAdminDashboard() {
   return useQuery({
     queryKey: adminQueryKeys.dashboard,
     queryFn: api.admin.dashboard.get,
+  });
+}
+
+export function useAdminNotifications() {
+  return useQuery({
+    queryKey: adminQueryKeys.notifications,
+    queryFn: api.admin.notifications.getAll,
   });
 }
 
@@ -109,6 +115,13 @@ export function useAdminOrderMutations() {
       onSuccess: (_data, variables) => {
         queryClient.invalidateQueries({ queryKey: adminQueryKeys.orders });
         queryClient.invalidateQueries({ queryKey: adminQueryKeys.order(variables.id) });
+        queryClient.invalidateQueries({ queryKey: adminQueryKeys.dashboard });
+      },
+    }),
+    remove: useMutation({
+      mutationFn: api.admin.orders.remove,
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: adminQueryKeys.orders });
         queryClient.invalidateQueries({ queryKey: adminQueryKeys.dashboard });
       },
     }),

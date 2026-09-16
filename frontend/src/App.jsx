@@ -20,6 +20,7 @@ import AdminLogin from "@/pages/admin/AdminLogin/AdminLogin";
 import ContactMessages from "@/pages/admin/ContactMessages/ContactMessages";
 import CustomizationRequests from "@/pages/admin/CustomizationRequests/CustomizationRequests";
 import Customizations from "@/pages/admin/Customizations/Customizations";
+import Notifications from "@/pages/admin/Notifications/Notifications";
 import Orders from "@/pages/admin/Orders/Orders";
 import Products from "@/pages/admin/Products/Products";
 
@@ -131,6 +132,7 @@ export default function App() {
             />
             <Route path="/admin/customization-requests" element={<CustomizationRequests />} />
             <Route path="/admin/contact-messages" element={<ContactMessages />} />
+            <Route path="/admin/notifications" element={<Notifications />} />
           </Route>
         </Route>
       </Routes>

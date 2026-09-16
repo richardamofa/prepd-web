@@ -39,6 +39,10 @@ if (!process.env.DATABASE_URL) {
   );
 }
 
+if (!process.env.RESEND_API_KEY || !process.env.RESEND_FROM_EMAIL) {
+  console.warn("Email delivery is disabled: RESEND_API_KEY and RESEND_FROM_EMAIL are required.");
+}
+
 const allowedOrigins = process.env.FRONTEND_URL
   ? process.env.FRONTEND_URL.split(",").map((origin) =>
       origin.trim(),

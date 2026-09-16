@@ -20,6 +20,22 @@ model AdminUser {
 
   orders               Order[]
   customizationRequests CustomizationRequest[]
+  activities            AdminActivity[]
+}
+
+model AdminActivity {
+  id          String   @id @default(cuid())
+  type        AdminActivityType
+  title       String
+  description String
+  entityType  String?
+  entityId    String?
+  adminId     String?
+  admin       AdminUser? @relation(fields: [adminId], references: [id], onDelete: SetNull)
+  createdAt   DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([type])
 }
 
 model Product {
@@ -243,4 +259,14 @@ enum ContactMessageStatus {
   READ
   REPLIED
   ARCHIVED
+}
+
+enum AdminActivityType {
+  ORDER_CREATED
+  CUSTOMIZATION_REQUEST_CREATED
+  CONTACT_MESSAGE_CREATED
+  ADMIN_LOGIN
+  ORDER_DELETED
+  CUSTOMIZATION_REQUEST_DELETED
+  CONTACT_MESSAGE_DELETED
 }

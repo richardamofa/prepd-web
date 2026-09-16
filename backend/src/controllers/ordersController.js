@@ -3,6 +3,7 @@ const ordersService = require(
 );
 const { sendOrderConfirmationEmail, sendOrderCompletionEmail, sendAdminOrderNotificationEmail } = require("../services/emailService");
 const AppError = require("../utils/AppError");
+const activityService = require("../services/adminActivityService");
 
 const createOrder = async (
   req,
@@ -12,6 +13,8 @@ const createOrder = async (
   try {
     const order =
       await ordersService.createOrder(req.body);
+
+    await activityService.recordActivity({ type: "ORDER_CREATED", title: "New order received", description: `${order.reference} was placed by ${order.customerName}.`, entityType: "order", entityId: order.id });
 
     try {
       await sendOrderConfirmationEmail(order);
@@ -142,6 +145,16 @@ const updatePaymentStatus = async (
   }
 };
 
+const deleteOrder = async (req, res, next) => {
+  try {
+    const deletedOrder = await ordersService.deleteOrder(req.params.id);
+    await activityService.recordActivity({ type: "ORDER_DELETED", title: "Order deleted", description: `Order ${deletedOrder.reference} was deleted.`, entityType: "order", entityId: deletedOrder.id, adminId: req.admin.id });
+    res.json({ success: true, message: "Order deleted successfully" });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   createOrder,
   getOrders,
@@ -149,4 +162,5 @@ module.exports = {
   getOrderByReference,
   updateOrderStatus,
   updatePaymentStatus,
+  deleteOrder,
 };

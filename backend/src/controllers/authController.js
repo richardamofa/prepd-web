@@ -1,4 +1,5 @@
 const authService = require("../services/authService");
+const activityService = require("../services/adminActivityService");
 
 const login = async (req, res, next) => {
   try {
@@ -15,6 +16,13 @@ const login = async (req, res, next) => {
       email,
       password,
     );
+
+    await activityService.recordActivity({
+      type: "ADMIN_LOGIN",
+      title: "Admin signed in",
+      description: `${result.admin.name || result.admin.email} signed in to the admin panel.`,
+      adminId: result.admin.id,
+    });
 
     res.status(200).json({
       success: true,

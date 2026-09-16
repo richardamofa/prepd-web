@@ -22,8 +22,8 @@ const sendEmail = async ({ to, subject, component, props, label }) => {
   const resend = getResendClient();
   const from = process.env.RESEND_FROM_EMAIL;
 
-  if (!resend || !from) {
-    console.warn(`${label} email skipped: Resend is not configured.`);
+  if (!process.env.RESEND_API_KEY || !from) {
+    console.error(`${label} email skipped: configure RESEND_API_KEY and RESEND_FROM_EMAIL in the backend environment.`);
     return { sent: false, skipped: true };
   }
 

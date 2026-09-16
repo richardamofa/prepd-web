@@ -6,7 +6,7 @@ import { useToast } from "@/context/ToastContext";
 import api from "@/services/api";
 
 import {
-    preparationOptions,
+  preparationOptions,
 } from "@/constants/customizationOptions";
 
 export default function CustomizationForm({
@@ -22,6 +22,7 @@ export default function CustomizationForm({
     preparationFor: "",
     programme: "",
     quantity: 1,
+    budget: "",
     notes: "",
   });
 
@@ -68,6 +69,7 @@ export default function CustomizationForm({
         customerName: formData.customerName,
         customerEmail: formData.customerEmail,
         customerPhone: formData.customerPhone,
+        budget: formData.budget,
         request: `${formData.preparationFor}; ${formData.programme}; Quantity: ${formData.quantity}; Items: ${selectedItems.join(", ")}; ${formData.notes}`,
       });
 
@@ -188,34 +190,62 @@ export default function CustomizationForm({
         </div>
       </div>
 
-      {/* Quantity */}
+      {/* Quantity and budget */}
 
-      <div>
-        <p className="mb-3 text-sm font-semibold">
-          Quantity
-        </p>
+      <div className="grid gap-4 sm:grid-cols-2">
+        <div>
+          <p className="mb-3 text-sm font-semibold">
+            Quantity
+          </p>
 
-        <div className="flex w-fit items-center rounded-xl border border-neutral-200">
-          <button
-            type="button"
-            onClick={decreaseQuantity}
-            className="px-4 py-3 text-lg transition hover:bg-neutral-100"
-          >
-            −
-          </button>
+          <div className="flex w-fit items-center rounded-xl border border-neutral-200">
+            <button
+              type="button"
+              onClick={decreaseQuantity}
+              className="px-4 py-3 text-lg transition hover:bg-neutral-100"
+            >
+              −
+            </button>
 
-          <span className="min-w-12 text-center font-semibold">
-            {formData.quantity}
-          </span>
+            <span className="min-w-12 text-center font-semibold">
+              {formData.quantity}
+            </span>
 
-          <button
-            type="button"
-            onClick={increaseQuantity}
-            className="px-4 py-3 text-lg transition hover:bg-neutral-100"
-          >
-            +
-          </button>
+            <button
+              type="button"
+              onClick={increaseQuantity}
+              className="px-4 py-3 text-lg transition hover:bg-neutral-100"
+            >
+              +
+            </button>
+          </div>
         </div>
+
+        <label
+          htmlFor="budget"
+          className="text-sm font-semibold"
+        >
+          Budget
+          <span className="ml-2 font-normal text-neutral-400">
+            Optional
+          </span>
+          <div className="relative mt-2">
+            <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-neutral-500">
+              GH₵
+            </span>
+            <input
+              id="budget"
+              name="budget"
+              type="number"
+              min="0"
+              step="0.01"
+              value={formData.budget}
+              onChange={handleChange}
+              placeholder="0.00"
+              className="w-full rounded-xl border border-neutral-200 py-3 pl-16 pr-4 font-normal outline-none transition focus:border-black"
+            />
+          </div>
+        </label>
       </div>
 
       {/* Notes */}

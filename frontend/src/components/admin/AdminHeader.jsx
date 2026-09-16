@@ -1,8 +1,11 @@
 import { Bell, Menu } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export default function AdminHeader({
   onMenuClick,
 }) {
+  const navigate = useNavigate();
+
   return (
     <header className="sticky top-0 z-30 flex h-20 items-center justify-between border-b border-neutral-200 bg-white/90 px-5 backdrop-blur-xl sm:px-8">
       <button
@@ -24,7 +27,7 @@ export default function AdminHeader({
       </div>
 
       <div className="flex items-center gap-5">
-        <button className="relative rounded-full p-2 transition hover:bg-neutral-100">
+        <button type="button" onClick={() => navigate("/admin/notifications")} className="relative rounded-full p-2 transition hover:bg-neutral-100" aria-label="Open notifications" title="Notifications">
           <Bell size={20} />
 
           <span className="absolute right-1 top-1 h-2 w-2 rounded-full bg-black" />

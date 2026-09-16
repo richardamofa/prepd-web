@@ -4,6 +4,7 @@ const { Prisma } = require("@prisma/client");
 const { text, email, phone, cuid, pagination } = require("../utils/validation");
 const AppError = require("../utils/AppError");
 const validStatuses = ["PENDING", "REVIEWING", "QUOTED", "APPROVED", "IN_PROGRESS", "COMPLETED", "REJECTED", "CANCELLED"];
+const activityService = require("../services/adminActivityService");
 
 const create = async (req, res, next) => {
   try {
@@ -19,6 +20,7 @@ const create = async (req, res, next) => {
         return new Prisma.Decimal(body.budget);
       })(),
     });
+    await activityService.recordActivity({ type: "CUSTOMIZATION_REQUEST_CREATED", title: "New customization request", description: `${result.reference} was submitted by ${result.customerName}.`, entityType: "customization-request", entityId: result.id });
     try {
       await sendCustomizationRequestConfirmationEmail(result);
     } catch (emailError) {
@@ -64,5 +66,5 @@ const update = async (req, res, next) => {
   } catch (error) { next(error); }
 };
 
-const remove = async (req, res, next) => { try { await service.deleteRequest(cuid(req.params.id)); res.json({ success: true, message: "Customization request deleted" }); } catch (error) { next(error); } };
+const remove = async (req, res, next) => { try { const id = cuid(req.params.id); await service.deleteRequest(id); await activityService.recordActivity({ type: "CUSTOMIZATION_REQUEST_DELETED", title: "Customization request deleted", description: `Customization request ${id} was deleted.`, entityType: "customization-request", entityId: id, adminId: req.admin.id }); res.json({ success: true, message: "Customization request deleted" }); } catch (error) { next(error); } };
 module.exports = { create, list, get, update, remove };
