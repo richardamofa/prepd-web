@@ -1,6 +1,8 @@
 export default function ProductContents({
   items = [],
 }) {
+  const placeholder = "/images/placeholders/customization-placeholder.png";
+
   return (
     <section className="mt-24 border-t border-neutral-200 pt-20">
       <div className="mb-12">
@@ -26,16 +28,10 @@ export default function ProductContents({
             >
               <div className="flex h-48 items-center justify-center rounded-2xl bg-white p-6">
                 <img
-                  src={
-                    customization.image ||
-                    "/images/placeholders/customization-placeholder.png"
-                  }
+                  src={customization.image && customization.image.toLowerCase() !== "preview" ? customization.image : placeholder}
                   alt={customization.name}
                   className="h-full w-full object-contain"
-                  onError={(e) => {
-                    e.currentTarget.src =
-                      "/images/placeholders/customization-placeholder.png";
-                  }}
+                  onError={(e) => { e.currentTarget.src = placeholder; }}
                 />
               </div>
 

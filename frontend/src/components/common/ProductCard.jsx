@@ -12,7 +12,7 @@ export default function ProductCard({ product }) {
       >
         <div className="flex aspect-square items-center justify-center p-10 transition-transform duration-500 group-hover:scale-[1.03]">
         <img
-          src={product.images?.[0]?.src || fallbackImage}
+          src={product.images?.[0]?.src && product.images[0].src.toLowerCase() !== "preview" ? product.images[0].src : fallbackImage}
           alt={product.images?.[0]?.altText || product.name}
           loading="lazy"
           decoding="async"

@@ -32,6 +32,13 @@ export function useAdminProducts() {
   });
 }
 
+export function useAdminCustomizationItems() {
+  return useQuery({
+    queryKey: ["admin", "customizations"],
+    queryFn: api.admin.customizations.getAll,
+  });
+}
+
 export function useAdminProduct(productId) {
   return useQuery({
     queryKey: adminQueryKeys.product(productId),

@@ -207,6 +207,9 @@ const updateProduct = async (id, data) => {
 
       include: includeProduct,
     });
+  }, {
+    maxWait: 10000,
+    timeout: 15000,
   });
 };
 
