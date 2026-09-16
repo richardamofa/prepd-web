@@ -144,13 +144,13 @@ const handleInstagramCheckout = async () => {
 
     setInstagramModalOpen(true);
     clearCart();
-    showToast("Instagram order created. Details have been processed and sent!.", "success");
+    showToast("You're all PREP'D up. Order has been processed and sent!.", "success");
   } catch (error) {
     // console.error(error);
     setError(
       "We couldn't prepare your order. Please try again.",
     );
-    showToast(error.message || "We couldn't prepare your Instagram order.", "error");
+    showToast(error.message || "We couldn't prepare your PREP'D order.", "error");
   } finally {
     setLoading(false);
   }
@@ -362,7 +362,7 @@ const handleInstagramCheckout = async () => {
 
             <div>
               <label className="mb-3 block text-sm font-semibold">
-                Payment Method
+                Payment Method (Website payments coming soon)
               </label>
 
               {/*<label className="flex cursor-pointer items-center gap-3 rounded-xl border border-neutral-200 p-4 transition hover:border-black">

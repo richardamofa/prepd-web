@@ -1,8 +1,9 @@
-import { Eye, Search } from "lucide-react";
+import { Eye, Search, Trash2 } from "lucide-react";
 
 import { useMemo, useState } from "react";
 
 import AdminModal from "@/components/admin/AdminModal";
+import DeleteConfirmationModal from "@/components/admin/DeleteConfirmationModal";
 import StatusBadge from "@/components/admin/StatusBadge";
 import Section from "@/components/ui/Section";
 import { useToast } from "@/context/ToastContext";
@@ -82,7 +83,7 @@ import { useAdminOrderMutations, useAdminOrders } from "@/hooks/adminQueries";
 export default function Orders() {
   const { showToast } = useToast();
   const { data: response, error, isPending, isFetching } = useAdminOrders();
-  const { updateStatus } = useAdminOrderMutations();
+  const { updateStatus, remove } = useAdminOrderMutations();
   const orders = (response?.data || []).map((order) => ({
     ...order,
     reference: order.reference,
@@ -99,6 +100,7 @@ export default function Orders() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [selectedOrder, setSelectedOrder] = useState(null);
+  const [orderToDelete, setOrderToDelete] = useState(null);
 
   const filteredOrders = useMemo(() => {
     return orders.filter((order) => {
@@ -125,6 +127,17 @@ export default function Orders() {
       showToast("Order status updated.", "success");
     } catch (updateError) {
       showToast(updateError.message || "Unable to update order status.", "error");
+    }
+  };
+
+  const deleteOrder = async () => {
+    try {
+      await remove.mutateAsync(orderToDelete.id);
+      setOrderToDelete(null);
+      if (selectedOrder?.id === orderToDelete.id) setSelectedOrder(null);
+      showToast("Order deleted.", "success");
+    } catch (deleteError) {
+      showToast(deleteError.message || "Unable to delete order.", "error");
     }
   };
 
@@ -279,13 +292,22 @@ export default function Orders() {
 
               {/* View */}
 
-              <button
-                onClick={() => setSelectedOrder(order)}
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-neutral-200 transition hover:bg-black hover:text-white"
-                title="View order"
-              >
-                <Eye size={17} />
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setSelectedOrder(order)}
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-neutral-200 transition hover:bg-black hover:text-white"
+                  title="View order"
+                >
+                  <Eye size={17} />
+                </button>
+                <button
+                  onClick={() => setOrderToDelete(order)}
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-red-200 text-red-600 transition hover:bg-red-600 hover:text-white"
+                  title="Delete order"
+                >
+                  <Trash2 size={17} />
+                </button>
+              </div>
             </div>
           ))}
         </div>
@@ -362,6 +384,14 @@ export default function Orders() {
           </div>
         )}
       </AdminModal>
+      <DeleteConfirmationModal
+        isOpen={Boolean(orderToDelete)}
+        onClose={() => setOrderToDelete(null)}
+        onConfirm={deleteOrder}
+        isDeleting={remove.isPending}
+        title="Delete order?"
+        itemLabel={orderToDelete?.reference || "this order"}
+      />
     </Section>
   );
 }

@@ -94,11 +94,15 @@ const api = {
     orders: {
       getAll: () => api.admin.request("/orders"),
       getById: (id) => api.admin.request(`/orders/${id}`),
+      remove: (id) => api.admin.request(`/orders/${id}`, { method: "DELETE" }),
       updateStatus: (id, orderStatus) => api.admin.request(`/orders/${id}/status`, { method: "PATCH", body: JSON.stringify({ orderStatus }) }),
       updatePayment: (id, paymentStatus) => api.admin.request(`/orders/${id}/payment`, { method: "PATCH", body: JSON.stringify({ paymentStatus }) }),
     },
     dashboard: {
       get: () => api.admin.request("/dashboard"),
+    },
+    notifications: {
+      getAll: (limit = 50) => api.admin.request(`/notifications?limit=${limit}`),
     },
     customizations: {
       getAll: () => api.admin.request("/customizations"),

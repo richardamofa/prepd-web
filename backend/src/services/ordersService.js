@@ -139,6 +139,13 @@ const getOrderById = async (id) => {
   });
 };
 
+const deleteOrder = async (id) => {
+  const order = await prisma.order.findUnique({ where: { id }, select: { id: true, reference: true } });
+  if (!order) throw new AppError("Order not found", 404);
+  await prisma.order.delete({ where: { id } });
+  return order;
+};
+
 const updateOrderStatus = async (id, orderStatus, { includeTransition = false } = {}) => {
   if (!includeTransition) {
     const order = await prisma.order.findUnique({ where: { id }, select: { id: true } });
@@ -183,6 +190,7 @@ module.exports = {
   createOrder,
   getAllOrders,
   getOrderById,
+  deleteOrder,
   getOrderByReference,
   updateOrderStatus,
   updatePaymentStatus,
