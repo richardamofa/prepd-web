@@ -44,9 +44,9 @@ const customizationItems = [
   ],
 
   [
-    "binder",
-    "Binder",
-    "A sturdy binder for organizing documents, notes, and important papers.",
+    "glue-binder",
+    "Glue Binder",
+    "A durable binder for keeping lecture notes, assignments and study materials neatly organized.",
   ],
 
   [
