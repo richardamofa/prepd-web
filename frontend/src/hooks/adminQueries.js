@@ -27,7 +27,7 @@ export function useAdminDashboard() {
 export function useAdminNotifications() {
   return useQuery({
     queryKey: adminQueryKeys.notifications,
-    queryFn: api.admin.notifications.getAll,
+    queryFn: () => api.admin.notifications.getAll(),
   });
 }
 
