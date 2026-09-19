@@ -69,7 +69,7 @@ function OrderConfirmationEmail({ order }) {
   const estimatedDuration = isDelivery
     ? process.env.ORDER_ESTIMATED_DELIVERY || "2-5 business days after delivery is confirmed"
     : "Ready for pickup after order confirmation";
-  const supportEmail = process.env.PREPD_SUPPORT_EMAIL || "hello@prepd.com";
+  const supportEmail = process.env.PREPD_SUPPORT_EMAIL || "prepdco.26@gmail.com";
   const logoUrl = process.env.PREPD_EMAIL_LOGO_URL;
   const deliveryValue = isDelivery
     ? "Fee confirmed separately based on distance"
